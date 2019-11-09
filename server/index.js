@@ -15,7 +15,7 @@ io.sockets.on('connection', (socket) => { //监听客户端连接，返回当前
   console.log('链接成功'+ socket.id);
   user.find({},function (err,docs) { //在user关联的表中查找所有数据
     socket.emit('allUsers',docs) //给当前客户端发送广播
-  })
+  })})
  
  
 socket.on('login', (data) => {})
