@@ -11,6 +11,8 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import VueSocketio from 'vue-socket.io'
+import socketio from 'socket.io-client'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -26,6 +28,8 @@ import '@/permission' // permission control
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
+
+Vue.use(VueSocketio, socketio('http://localhost:3000'))
 import { mockXHR } from '../mock'
 // console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {

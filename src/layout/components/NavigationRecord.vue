@@ -84,6 +84,10 @@ export default {
         matched = [{ path: '/dashboard', meta: { title: 'Dashboard' }}].concat(matched)
       }
       this.levelList = matched.filter(item => item.meta && item.meta.title && item.meta.breadcrumb !== false)
+      if (this.levelList.length === 1) {
+        this.tags.push({ name: 'Dashboard', path: '/dashboard' })
+        return
+      }
       this.tags.push({ name: (this.levelList.pop()).meta.title, path: (this.levelList.pop()).path })
     },
     isDashboard(route) {
@@ -142,6 +146,18 @@ export default {
 .el-button--info:nth-of-type(2){
   float: right;
   z-index: 9999;
+}
+.el-tag--warning::before{
+ background: #ffc964 !important;
+}
+.el-tag::before{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #a6d2ff;
+  display: inline-block;
+  content: close-quote;
+  margin-right: 6px;
 }
 .el-tag{
   margin-left: 10px;

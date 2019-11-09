@@ -12,6 +12,9 @@ const mocks = [
 // for front mock
 // please use it cautiously, it will redefine XMLHttpRequest,
 // which will cause many of your third-party libraries to be invalidated(like progress event).
+// 正面模拟
+// 请谨慎使用，它将重新定义XMLHttpRequest，
+// 这将导致许多第三方库失效（如进度事件）。
 export function mockXHR() {
   // mock patch
   // https://github.com/nuysoft/Mock/issues/300

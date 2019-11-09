@@ -28,7 +28,7 @@ const users = {
     roles: ['test'],
     introduction: 'I am an test',
     avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif',
-    name: 'Normal Test'
+    name: '测试人员'
   }
 }
 
@@ -40,7 +40,6 @@ export default [
     response: config => {
       const { username } = config.body
       const token = tokens[username]
-
       // mock error
       if (!token) {
         return {
