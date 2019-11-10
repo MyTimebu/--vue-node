@@ -11,9 +11,7 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
-import VueSocketio from 'vue-socket.io'
-import socketio from 'socket.io-client'
-
+// import socket from 'socket.io'
 import '@/icons' // icon
 import '@/permission' // permission control
 
@@ -29,16 +27,16 @@ import '@/permission' // permission control
  * please remove it before going online! ! !
  */
 
-Vue.use(VueSocketio, socketio('http://localhost:3000'))
 import { mockXHR } from '../mock'
 // console.log(process.env.NODE_ENV)
 if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
-
+// servers()
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 Vue.use(ElementUI)
+// Vue.use(socket)
 // 如果想要中文版 element-ui，按如下方式声明
 // Vue.use(ElementUI)
 

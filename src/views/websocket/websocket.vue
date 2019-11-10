@@ -23,8 +23,48 @@
 </template>
 
 <script>
+// import socket from 'socket.io'
 export default {
+  data() {
+    return {
 
+    }
+  },
+  created() {
+    this.init()
+  },
+  methods: {
+    init(){
+      var socket = io.connect("http://localhost:3000/") //连接聊天室的io服务器 io服务器的根地址
+
+      var oText = document.getElementById("text")
+      var oBtn = document.getElementById("btn")
+
+      var myMessage = ""
+
+      oBtn.onclick = function () {
+        var mes = oText.value
+
+        // 当消息为空时
+        if(!mes){
+          return
+        }
+        myMessage = mes
+        socket.send(mes) // 发送消息到服务器
+        oText.value = "" // 清空文本框
+      }
+
+      // 当服务器广播消息时，触发message事件，消息内容在回调函数中
+      socket.on('message',function (mm) {
+        var p = document.createElement('p')
+        p.innerText = mm
+        if(myMessage === mm){
+          p.style.cssText = "color:red;margin-left:10%"
+        }
+        document.body.appendChild(p)
+      })
+    }
+  },
 }
 </script>
 
@@ -89,7 +129,7 @@ export default {
   background: rgba(139, 213, 255, 0.349);
   .top{
     width: 100%;
-    height: 600px;
+    height: 60vh;
     background: #fdfafa;
     .ChatContent-right{
       text-align: right;
