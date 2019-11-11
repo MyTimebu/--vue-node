@@ -10,59 +10,76 @@
     </div>
     <div class="sidebar-right">
       <div class="top">
-        <div class="ChatContent">123</div>
+        <div class="ChatContent">{{name}}</div>
         <div class="ChatContent-right">321</div>
       </div>
       <div class="bottom">
         <div class="Label">1</div>
-        <div class="InputPanel" contenteditable="true">1</div>
-        <el-button type="primary" size="small">发送</el-button>
+        <div class="InputPanel" ref="divcontent" contenteditable="true">1</div>
+        <el-button type="primary" @click="sendMessage" size="small">发送</el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script>
-// import socket from 'socket.io'
+import { mapGetters } from 'vuex'
 export default {
   data() {
     return {
-
+      MessageContent:'',
+      content:''
     }
+  },
+  computed: {
+    ...mapGetters([
+      'name'
+    ])
   },
   created() {
     this.init()
   },
+  mounted(){},
   methods: {
     init(){
-      var socket = io.connect("http://localhost:3000/") //连接聊天室的io服务器 io服务器的根地址
-
-      var oText = document.getElementById("text")
-      var oBtn = document.getElementById("btn")
-
-      var myMessage = ""
-
-      oBtn.onclick = function () {
-        var mes = oText.value
-
-        // 当消息为空时
-        if(!mes){
-          return
-        }
-        myMessage = mes
-        socket.send(mes) // 发送消息到服务器
-        oText.value = "" // 清空文本框
+      console.log(this.name.split('').length)
+      let name = this.name
+      let id = this.name.split('').length
+      let ws = new WebSocket("ws://localhost:8090");
+      ws.onopen = function (e) {
+        console.log('Connection to server opened');
       }
-
-      // 当服务器广播消息时，触发message事件，消息内容在回调函数中
-      socket.on('message',function (mm) {
-        var p = document.createElement('p')
-        p.innerText = mm
-        if(myMessage === mm){
-          p.style.cssText = "color:red;margin-left:10%"
-        }
-        document.body.appendChild(p)
-      })
+      // 收到消息处理
+      ws.onmessage = (e)=> {
+        var data = JSON.parse(e.data)
+        console.log(data)
+        var nickname = data.nickname
+        this.appendLog(data.type, data.nickname, data.message)
+        console.log('ID: [%s] = %s', data.id, data.message)
+      },
+      ws.onclose = (e)=> {
+        this.appendLog('Connection closed')
+        console.log('Connection closed')
+      }
+    },
+    appendLog(type, nickname, message) {
+      console.log(12331,typeof message)
+      if (typeof message === 'undefined') return
+      var preface_label
+      var message_text
+      console.log(
+        preface_label,
+        message_text
+      )
+    },
+    // 发送消息
+    sendMessage() {
+      let ws = new WebSocket("ws://localhost:8090");
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.send(this.$refs.divcontent.innerHTML)
+      }
+      this.$refs.divcontent.innerHTML = ''
+      // messageField.focus()
     }
   },
 }
@@ -129,7 +146,7 @@ export default {
   background: rgba(139, 213, 255, 0.349);
   .top{
     width: 100%;
-    height: 60vh;
+    height: 55vh;
     background: #fdfafa;
     .ChatContent-right{
       text-align: right;
@@ -137,7 +154,7 @@ export default {
   }
   .bottom{
     width: 100%;
-    height: 100%;
+    height: 30vh;
     border-top: 1px rgb(204, 204, 204) solid;
     box-sizing: border-box;
     background: rgba(208, 253, 251, 0.021);
@@ -153,7 +170,7 @@ export default {
     }
     .el-button--primary{
       position: absolute;
-      top: 200px;
+      bottom: 10px;
       right: 30px;
     }
   }

@@ -3,7 +3,7 @@ const express = require('express')
 
 // 2. 创建路有对象
 const router = express.Router()
-
+// var querystring = require('querystring')
 // 加载 数据库操作模块
 const db = require('./db.js')
 // 加载其他会用到的模块
@@ -19,9 +19,34 @@ router.post('/test', (req, res) => {
   console.log(req, res, '12321')
 })
 router.post('/user/login', (req, res) => {
-  console.log(req)
-})
+  var alldata = ''
+  req.on('data', function(chunk) {
+    alldata += chunk
+  })
 
+  req.on('end', function() {
+    // 将字符串转换位一个对象
+    var dataString = alldata.toString()
+    console.log(JSON.parse(dataString))
+    const data = JSON.parse(dataString)
+    // 将接收到的字符串转换位为json对象
+    // var dataObj = querystring.parse(dataString)
+    // // 输出数据
+    // console.log(dataObj)
+    const status = { code: 20000, message: '一切正常', data: { 'token': data.username + '-token' }}
+    res.json(status)
+  })
+})
+router.get('/user/info', (req, res) => {
+  console.log(req.query)
+  const status = { code: 20000, message: '一切正常', data: { name: req.query.token, avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif' }}
+  res.json(status)
+})
+router.post('/user/logout', (req, res) => {
+  console.log(req.query)
+  const status = { code: 20000, message: '一切正常', data: '' }
+  res.json(status)
+})
 // 监听 /modifystu
 //  接收edit.html中表单提交的数据，拼接update的SQL语句，再执行，执行成功之后跳转回 /index
 router.post('/modifystu', (req, res) => {
