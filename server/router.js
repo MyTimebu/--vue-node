@@ -1,11 +1,10 @@
 // 1. 加载 express 模块
 const express = require('express')
-
 // 2. 创建路有对象
 const router = express.Router()
 // var querystring = require('querystring')
 // 加载 数据库操作模块
-const db = require('./db.js')
+// const db = require('./db.js')
 // 加载其他会用到的模块
 // const path = require('path')
 // 加载moment模块
@@ -45,6 +44,11 @@ router.get('/user/info', (req, res) => {
 router.post('/user/logout', (req, res) => {
   console.log(req.query)
   const status = { code: 20000, message: '一切正常', data: '' }
+  res.json(status)
+})
+router.post('/list', (req, res) => {
+  console.log(clients)
+  const status = { code: 20000, message: '一切正常', data: clients }
   res.json(status)
 })
 // 监听 /modifystu

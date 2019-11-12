@@ -1,17 +1,17 @@
 <template>
   <div style="display: flex;">
     <div class="sidebar-left">
-      <div class="left-name">
+      <div v-for="(item,index) in userList" :key="index" @click="ids=item.id" class="left-name">
         <img src="@/assets/images/1.jpeg">
-        <div class="name">先随便写一个</div>
+        <div class="name">{{item.id}}---{{item.nickname}}</div>
         <div class="content">测试热数据只为测试使用内容有限暂时这样</div>
         <div class="time">08:31</div>
       </div>
     </div>
     <div class="sidebar-right">
       <div class="top">
-        <div class="ChatContent">{{name}}</div>
-        <div class="ChatContent-right">321</div>
+        <div v-for="(item,index) in contents" :key="index" :class="item.nickname != name?'ChatContent':'ChatContent-right'">{{item.nickname}}:{{item.message}}</div>
+        <!-- <div class="ChatContent-right">{{names}}:{{message}}</div> -->
       </div>
       <div class="bottom">
         <div class="Label">1</div>
@@ -24,11 +24,18 @@
 
 <script>
 import { mapGetters } from 'vuex'
+import request from '@/utils/request'
 export default {
   data() {
     return {
       MessageContent:'',
-      content:''
+      content:'',
+      ws : new WebSocket("ws://localhost:8090"),
+      message:'',
+      names:'',
+      userList:[],
+      ids: '',
+      contents:[]
     }
   },
   computed: {
@@ -37,46 +44,78 @@ export default {
     ])
   },
   created() {
+    this.list()
     this.init()
   },
-  mounted(){},
+  mounted(){
+    setInterval(()=>{
+       // 收到消息处理
+       console.log(123)
+      this.ws.onmessage = (e)=> {
+        var data = JSON.parse(e.data)
+        console.log(data)
+        var nickname = data.nickname
+        this.appendLog(data.type, data.nickname, data.message)
+        console.log('ID: [%s] = %s', data.id, data.message)
+      }
+    },2000)
+  },
   methods: {
-    init(){
-      console.log(this.name.split('').length)
+    list(){
+      // console.log(this.name.split('').length)
       let name = this.name
       let id = this.name.split('').length
-      let ws = new WebSocket("ws://localhost:8090");
-      ws.onopen = function (e) {
+      let data = {
+        id,
+        name
+      }
+      request({
+        url: '/user/list',
+        method: 'post',
+        data
+      }).then(response => {
+        const { data } = response
+        console.log(data)
+        this.userList = data
+      }).catch(error => {
+        reject(error)
+      })
+    },
+    init(){
+      // let ws = new WebSocket("ws://localhost:8090");
+      this.ws.onopen = function (e) {
         console.log('Connection to server opened');
       }
       // 收到消息处理
-      ws.onmessage = (e)=> {
+      this.ws.onmessage = (e)=> {
         var data = JSON.parse(e.data)
         console.log(data)
         var nickname = data.nickname
         this.appendLog(data.type, data.nickname, data.message)
         console.log('ID: [%s] = %s', data.id, data.message)
       },
-      ws.onclose = (e)=> {
+      this.ws.onclose = (e)=> {
         this.appendLog('Connection closed')
         console.log('Connection closed')
       }
     },
     appendLog(type, nickname, message) {
-      console.log(12331,typeof message)
       if (typeof message === 'undefined') return
-      var preface_label
-      var message_text
-      console.log(
-        preface_label,
-        message_text
-      )
+      this.contents.push({nickname,message})
+      // var preface_label
+      // var message_text
+      // console.log(
+      //   preface_label,
+      //   message_text,'----------------'
+      // )
     },
     // 发送消息
     sendMessage() {
-      let ws = new WebSocket("ws://localhost:8090");
-      if (ws.readyState === WebSocket.OPEN) {
-        ws.send(this.$refs.divcontent.innerHTML)
+      // let this.ws = new WebSocket("ws://localhost:8090");
+      if (this.ws.readyState === WebSocket.OPEN) {
+        console.log(this.$refs.divcontent.innerHTML)
+        let shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.ids+'&'+this.name.split('').length,name:this.name})
+        this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''
       // messageField.focus()
