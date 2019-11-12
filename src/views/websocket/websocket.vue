@@ -114,7 +114,7 @@ export default {
       // let this.ws = new WebSocket("ws://localhost:8090");
       if (this.ws.readyState === WebSocket.OPEN) {
         console.log(this.$refs.divcontent.innerHTML)
-        let shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.ids+'&'+this.name.split('').length,name:this.name})
+        let shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
         this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''
