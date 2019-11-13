@@ -16,16 +16,8 @@ var conns = []
  * @param  {String} nickname 用户昵称，广播方式为admin时可以不存在
  */
 function broadcastSend(obj) {
-  if (conns.length !== 0) {
-    conns.forEach(function(v, i) {
-      console.log(i)
-      // if (v.ws.readyState === ws.OPEN) {
-      v.ws.send(JSON.stringify(obj))
-      // }
-    })
-    return
-  }
   clients.forEach(function(v, i) {
+    console.log('群发')
     if (v.ws.readyState === ws.OPEN) {
       v.ws.send(JSON.stringify(obj))
     }
@@ -48,7 +40,6 @@ router.post('/user/list', (req, res) => {
     clients.forEach((item, index) => {
       if (Number(item.id) === Number(data.id)) {
         id = ''
-        name = ''
       }
     })
     // 将接收到的字符串转换位为json对象
@@ -72,15 +63,16 @@ wss.on('connection', function(ws) {
    * 关闭服务，从客户端监听列表删除
    */
   function closeSocket() {
-    console.log(name)
+    console.log('连接断开111')
     for (let i = 0; i < clients.length; i++) {
-      if (clients[i].id === id) {
+      if (Number(clients[i].id) === Number(id)) {
         var disconnect_message = `${name} has disconnected`
         var obj = {
-          'type': 'notification',
+          'type': 'admin',
           'nickname': name,
           'message': disconnect_message
         }
+        conns = []
         broadcastSend(obj)
         clients.splice(i, 1)
       }
@@ -89,40 +81,36 @@ wss.on('connection', function(ws) {
   /* 监听消息*/
   ws.on('message', function(obj) {
     const objs = JSON.parse(obj)
-    if (objs.content.indexOf('/nick') === 0) {
-      var nickname_array = objs.content.split(' ')
-      if (nickname_array.length >= 2) {
-        var old_nickname = objs.name
-        var nickname_message = `Client ${old_nickname} change to ${objs.name}`
+    if (!objs.id) {
         var objse = {
-          'type': 'nick_update',
+          'type': 'message',
           'nickname': objs.name,
-          'message': nickname_message
+          'message': objs.content+'群发'
         }
+        conns = []
         broadcastSend(objse)
-      }
     } else {
-      var shuju = []
+      var objst = {
+        'type': 'message',
+        'nickname': objs.name,
+        'message': objs.content+'單发'
+      }
       String(objs.id).split('&').forEach((item, index) => {
         clients.forEach((v, i) => {
           if (Number(clients[i].id) === Number(objs.id.split('&')[index])) {
-            shuju.push(v)
+            console.log(v.nickname)
+            v.ws.send(JSON.stringify(objst))
           }
         })
       })
-      conns = shuju
-      var objst = {
-        'type': '2',
-        'nickname': objs.name,
-        'message': objs.content,
-        'bridge': objs.id
-      }
-      broadcastSend(objst)
     }
   })
   /* 监听断开连接*/
   ws.on('close', function() {
     closeSocket()
   })
+  ws.on("error", function (code, reason) {
+    console.log("异常关闭");
+  });
 })
 module.exports = { wss, router }

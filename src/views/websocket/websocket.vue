@@ -1,6 +1,12 @@
 <template>
   <div style="display: flex;">
     <div class="sidebar-left">
+      <div @click="ids=''" class="left-name">
+        <img src="@/assets/images/1.jpeg">
+        <div class="name">群聊</div>
+        <div class="content">一群</div>
+        <div class="time">08:31</div>
+      </div>
       <div v-for="(item,index) in userList" :key="index" @click="ids=item.id" class="left-name">
         <img src="@/assets/images/1.jpeg">
         <div class="name">{{item.id}}---{{item.nickname}}</div>
@@ -35,7 +41,8 @@ export default {
       names:'',
       userList:[],
       ids: '',
-      contents:[]
+      contents:[],
+      Interval:null
     }
   },
   computed: {
@@ -45,12 +52,12 @@ export default {
   },
   created() {
     this.list()
-    this.init()
+    this.init()  
   },
   mounted(){
-    setInterval(()=>{
+    this.Interval=setInterval(()=>{
        // 收到消息处理
-       console.log(123)
+      console.log(123)
       this.ws.onmessage = (e)=> {
         var data = JSON.parse(e.data)
         console.log(data)
@@ -58,8 +65,22 @@ export default {
         this.appendLog(data.type, data.nickname, data.message)
         console.log('ID: [%s] = %s', data.id, data.message)
       }
+      // this.list()
+      this.ws.onclose = (e)=> {
+        this.appendLog('Connection closed')
+        console.log('Connection closed')
+      }
     },2000)
   },
+  beforeDestroy() {
+    if(this.Interval) {
+      this.ws.onclose = (e)=> {
+        this.appendLog('Connection closed')
+        console.log('Connection closed')
+      }
+      clearInterval(this.Interval); //关闭
+    }
+  },  //利用vue的生命周期函数
   methods: {
     list(){
       // console.log(this.name.split('').length)
@@ -93,10 +114,6 @@ export default {
         var nickname = data.nickname
         this.appendLog(data.type, data.nickname, data.message)
         console.log('ID: [%s] = %s', data.id, data.message)
-      },
-      this.ws.onclose = (e)=> {
-        this.appendLog('Connection closed')
-        console.log('Connection closed')
       }
     },
     appendLog(type, nickname, message) {
@@ -114,7 +131,13 @@ export default {
       // let this.ws = new WebSocket("ws://localhost:8090");
       if (this.ws.readyState === WebSocket.OPEN) {
         console.log(this.$refs.divcontent.innerHTML)
-        let shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
+        let shuju
+        if(this.ids!==''){
+          shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
+        }else{
+          shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,name:this.name})
+        }
+        
         this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''
