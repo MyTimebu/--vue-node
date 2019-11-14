@@ -91,6 +91,19 @@ export const constantRoutes = [
   },
 
   {
+    path: '/canvas',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '图片裁切',
+        component: () => import('@/views/canvas/index'),
+        meta: { title: 'canvas合成', icon: 'find' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [
