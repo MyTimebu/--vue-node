@@ -51,7 +51,6 @@ export default {
     ])
   },
   created() {
-    this.list()
     this.init()  
   },
   mounted(){
@@ -67,16 +66,19 @@ export default {
       }
       // this.list()
       this.ws.onclose = (e)=> {
-        this.appendLog('Connection closed')
-        console.log('Connection closed')
+        // this.appendLog('Connection closed')
       }
+      this.ws.error = (e)=> {
+        // this.appendLog('Connection closed')
+      }
+      this.list()
     },2000)
   },
   beforeDestroy() {
+    console.log('连接断开')
     if(this.Interval) {
       this.ws.onclose = (e)=> {
-        this.appendLog('Connection closed')
-        console.log('Connection closed')
+        // this.appendLog('Connection closed')
       }
       clearInterval(this.Interval); //关闭
     }
@@ -109,6 +111,7 @@ export default {
       }
       // 收到消息处理
       this.ws.onmessage = (e)=> {
+        console.log(e.data)
         var data = JSON.parse(e.data)
         console.log(data)
         var nickname = data.nickname
@@ -129,15 +132,14 @@ export default {
     // 发送消息
     sendMessage() {
       // let this.ws = new WebSocket("ws://localhost:8090");
+      let shuju
+      if(this.ids!==''){
+        shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
+      }else{
+        shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,name:this.name})
+      }
       if (this.ws.readyState === WebSocket.OPEN) {
-        console.log(this.$refs.divcontent.innerHTML)
-        let shuju
-        if(this.ids!==''){
-          shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
-        }else{
-          shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,name:this.name})
-        }
-        
+        console.log(this.$refs.divcontent.innerHTML)   
         this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''

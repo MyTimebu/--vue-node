@@ -33,13 +33,13 @@ router.post('/user/list', (req, res) => {
   req.on('end', function() {
     // 将字符串转换位一个对象
     var dataString = alldata.toString()
-    console.log(JSON.parse(dataString))
+    // console.log(JSON.parse(dataString))
     const data = JSON.parse(dataString)
     id = data.id
     name = data.name
     clients.forEach((item, index) => {
       if (Number(item.id) === Number(data.id)) {
-        id = ''
+        name = ''
       }
     })
     // 将接收到的字符串转换位为json对象
@@ -52,7 +52,7 @@ router.post('/user/list', (req, res) => {
 })
 // 监听连接
 wss.on('connection', function(ws) {
-  if (id !== '') {
+  if (name !== '') {
     clients.push({
       'id': id,
       'ws': ws,
@@ -63,20 +63,21 @@ wss.on('connection', function(ws) {
    * 关闭服务，从客户端监听列表删除
    */
   function closeSocket() {
-    console.log('连接断开111')
-    for (let i = 0; i < clients.length; i++) {
-      if (Number(clients[i].id) === Number(id)) {
-        var disconnect_message = `${name} has disconnected`
+    clients.forEach((item,index)=>{
+      if (Number(item.id) === Number(id)) {
+        console.log('连接断开111')
+
+        var disconnect_message = `${item.nickname} 已经下线`
         var obj = {
-          'type': 'admin',
-          'nickname': name,
+          'type': 'message',
+          'nickname': item.nickname,
           'message': disconnect_message
         }
         conns = []
         broadcastSend(obj)
-        clients.splice(i, 1)
+        clients.splice(index, 1)
       }
-    }
+    })
   }
   /* 监听消息*/
   ws.on('message', function(obj) {
@@ -98,7 +99,7 @@ wss.on('connection', function(ws) {
       String(objs.id).split('&').forEach((item, index) => {
         clients.forEach((v, i) => {
           if (Number(clients[i].id) === Number(objs.id.split('&')[index])) {
-            console.log(v.nickname)
+            // console.log(v.nickname)
             v.ws.send(JSON.stringify(objst))
           }
         })
@@ -106,7 +107,8 @@ wss.on('connection', function(ws) {
     }
   })
   /* 监听断开连接*/
-  ws.on('close', function() {
+  ws.on('close', function(obj) {
+    // console.log(obj,'-----断开连接的人员id')
     closeSocket()
   })
   ws.on("error", function (code, reason) {
