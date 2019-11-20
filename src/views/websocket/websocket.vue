@@ -7,7 +7,7 @@
         <div class="content">一群</div>
         <div class="time">08:31</div>
       </div>
-      <div v-for="(item,index) in userList" :key="index" @click="ids=item.id" class="left-name">
+      <div v-for="(item,index) in userList" v-if="item.nickname !== name" :key="index" @click="ids=item.id" class="left-name">
         <img src="@/assets/images/1.jpeg">
         <div class="name">{{item.id}}---{{item.nickname}}</div>
         <div class="content">测试热数据只为测试使用内容有限暂时这样</div>
@@ -51,27 +51,33 @@ export default {
     ])
   },
   created() {
-    this.init()  
+    this.list()
+    this.init()
   },
   mounted(){
     this.Interval=setInterval(()=>{
        // 收到消息处理
       console.log(123)
+      
       this.ws.onmessage = (e)=> {
         var data = JSON.parse(e.data)
         console.log(data)
+        console.log(data.message)
+        if (data.message === '') {
+          this.userList.push({nickname:data.nickname,id:data.id})
+        }
+        
         var nickname = data.nickname
         this.appendLog(data.type, data.nickname, data.message)
-        console.log('ID: [%s] = %s', data.id, data.message)
+        // console.log('ID: [%s] = %s', data.id, data.message)
       }
-      // this.list()
+
       this.ws.onclose = (e)=> {
         // this.appendLog('Connection closed')
       }
       this.ws.error = (e)=> {
         // this.appendLog('Connection closed')
       }
-      this.list()
     },2000)
   },
   beforeDestroy() {
@@ -120,7 +126,10 @@ export default {
       }
     },
     appendLog(type, nickname, message) {
-      if (typeof message === 'undefined') return
+      console.log(typeof message, typeof message === 'undefined')
+      // if (typeof message === 'undefined') {
+      //   return
+      // } 
       this.contents.push({nickname,message})
       // var preface_label
       // var message_text
@@ -131,15 +140,22 @@ export default {
     },
     // 发送消息
     sendMessage() {
-      // let this.ws = new WebSocket("ws://localhost:8090");
+      if(this.$refs.divcontent.innerHTML.replace(/\s/g,"") === ''){
+        this.$message({
+          message: '输入不能为空',
+          type: 'warning'
+        })
+        return
+      }
+      
       let shuju
       if(this.ids!==''){
         shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
       }else{
         shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,name:this.name})
       }
+      
       if (this.ws.readyState === WebSocket.OPEN) {
-        console.log(this.$refs.divcontent.innerHTML)   
         this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''

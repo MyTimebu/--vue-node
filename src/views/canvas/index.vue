@@ -227,9 +227,7 @@ export default {
       src:''
     }
   },
-  created(){
-  
-  },
+  created(){},
   methods: {
     success(src) {
       // 设置img的src
@@ -240,9 +238,7 @@ export default {
   fail(err) {
     console.log('fail', err)
   } 
-};
+}
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

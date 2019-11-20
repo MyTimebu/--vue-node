@@ -26,7 +26,7 @@ router.post('/user/login', (req, res) => {
   req.on('end', function() {
     // 将字符串转换位一个对象
     var dataString = alldata.toString()
-    console.log(JSON.parse(dataString))
+    // console.log(JSON.parse(dataString))
     const data = JSON.parse(dataString)
     // 将接收到的字符串转换位为json对象
     // var dataObj = querystring.parse(dataString)
@@ -37,18 +37,18 @@ router.post('/user/login', (req, res) => {
   })
 })
 router.get('/user/info', (req, res) => {
-  console.log(req.query)
+  // console.log(req.query)
   const status = { code: 20000, message: '一切正常', data: { name: req.query.token, avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif' }}
   res.json(status)
 })
 router.post('/user/logout', (req, res) => {
-  console.log(req.query)
+  // console.log(req.query)
   const status = { code: 20000, message: '一切正常', data: '' }
   res.json(status)
 })
 router.post('/list', (req, res) => {
-  console.log(clients)
-  const status = { code: 20000, message: '一切正常', data: clients }
+  // console.log(clients)
+  const status = { code: 20000, message: '一切正常', data: '' }
   res.json(status)
 })
 // 监听 /modifystu

@@ -58,12 +58,20 @@ wss.on('connection', function(ws) {
       'ws': ws,
       'nickname': name
     })
+    var obj = {
+      'type': 'message',
+      'nickname': name,
+      'message': '',
+      'id': id
+    }
+    conns = []
+    broadcastSend(obj)
   }
   /**
    * 关闭服务，从客户端监听列表删除
    */
   function closeSocket() {
-    clients.forEach((item,index)=>{
+    clients.forEach((item, index) => {
       if (Number(item.id) === Number(id)) {
         console.log('连接断开111')
 
@@ -83,18 +91,18 @@ wss.on('connection', function(ws) {
   ws.on('message', function(obj) {
     const objs = JSON.parse(obj)
     if (!objs.id) {
-        var objse = {
-          'type': 'message',
-          'nickname': objs.name,
-          'message': objs.content+'群发'
-        }
-        conns = []
-        broadcastSend(objse)
+      var objse = {
+        'type': 'message',
+        'nickname': objs.name,
+        'message': objs.content + '群发'
+      }
+      conns = []
+      broadcastSend(objse)
     } else {
       var objst = {
         'type': 'message',
         'nickname': objs.name,
-        'message': objs.content+'單发'
+        'message': objs.content + '單发'
       }
       String(objs.id).split('&').forEach((item, index) => {
         clients.forEach((v, i) => {
@@ -111,8 +119,8 @@ wss.on('connection', function(ws) {
     // console.log(obj,'-----断开连接的人员id')
     closeSocket()
   })
-  ws.on("error", function (code, reason) {
-    console.log("异常关闭");
-  });
+  ws.on('error', function(code, reason) {
+    console.log('异常关闭')
+  })
 })
 module.exports = { wss, router }
