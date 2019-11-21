@@ -44,8 +44,8 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span style="margin-right:20px;">可用账户为: 'admin', 'editor', 'test'</span>
+        <span> password: {{timer}}</span>
       </div>
 
     </el-form>
@@ -83,8 +83,12 @@ export default {
       },
       loading: false,
       passwordType: 'password',
-      redirect: undefined
+      redirect: undefined,
+      timer:60,
     }
+  },
+  mounted(){
+    this.bibao()
   },
   watch: {
     $route: {
@@ -120,7 +124,21 @@ export default {
           return false
         }
       })
-    }
+    },
+    bibao:(()=>{
+      return function () {
+        // console.log(this); // Vue的顶级对象
+        if(this.timer == 0){
+          this.timer = 60
+          return
+        }else{
+          this.timer--
+          setTimeout(()=>{
+            this.bibao()
+          },1000)
+        }
+      }
+    })()
   }
 }
 </script>

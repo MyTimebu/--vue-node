@@ -15,7 +15,7 @@ const router = express.Router()
 
 // 监听 /addstu, 接收表单提交的数据并添加到student表中
 router.post('/test', (req, res) => {
-  console.log(req, res, '12321')
+  res.end('shujujdoasdhj1')
 })
 router.post('/user/login', (req, res) => {
   var alldata = ''
@@ -37,7 +37,7 @@ router.post('/user/login', (req, res) => {
   })
 })
 router.get('/user/info', (req, res) => {
-  // console.log(req.query)
+  console.log(req.query)
   const status = { code: 20000, message: '一切正常', data: { name: req.query.token, avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif' }}
   res.json(status)
 })

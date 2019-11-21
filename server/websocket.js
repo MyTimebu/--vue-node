@@ -5,10 +5,9 @@ const router = express.Router()
 const ws = require('ws')
 const SocketServer = ws.Server
 const wss = new SocketServer({ port: 8090 }) // 创建websocketServer实例监听8090端口
-const clients = []
+var clients = []
 var id = ''
 var name = ''
-var conns = []
 /**
  * 广播所有客户端消息
  * @param  {String} type     广播方式(admin为系统消息，user为用户消息)
@@ -24,7 +23,7 @@ function broadcastSend(obj) {
   })
 }
 
-router.post('/user/list', (req, res) => {
+router.post('/webpack/info', (req, res) => {
   var alldata = ''
   req.on('data', function(chunk) {
     alldata += chunk
@@ -37,36 +36,44 @@ router.post('/user/list', (req, res) => {
     const data = JSON.parse(dataString)
     id = data.id
     name = data.name
-    clients.forEach((item, index) => {
-      if (Number(item.id) === Number(data.id)) {
-        name = ''
-      }
-    })
     // 将接收到的字符串转换位为json对象
     // var dataObj = querystring.parse(dataString)
     // // 输出数据
     // console.log(dataObj)
-    const status = { code: 20000, message: '一切正常', data: clients }
+    const status = { code: 20000, message: '一切正常', data: '' }
     res.json(status)
   })
 })
+
 // 监听连接
 wss.on('connection', function(ws) {
-  if (name !== '') {
-    clients.push({
-      'id': id,
-      'ws': ws,
-      'nickname': name
-    })
-    var obj = {
-      'type': 'message',
-      'nickname': name,
-      'message': '',
-      'id': id
-    }
-    conns = []
-    broadcastSend(obj)
+  clients.push({
+    'id': id,
+    'ws': ws,
+    'nickname': name
+  })
+  var obj = {
+    'type': 'message',
+    'nickname': name,
+    'message': ``,
+    'id': id
   }
+  broadcastSend(obj)
+  clients.forEach((item) => {
+    if (Number(item.id) === Number(id)) {
+      clients.forEach((items) => {
+        var obj = {
+          'type': 'message',
+          'nickname': items.nickname,
+          'message': ``,
+          'id': items.id
+        }
+        item.ws.send(JSON.stringify(obj))
+      })
+      return
+    }
+  })
+  // clients = new Set(clients)
   /**
    * 关闭服务，从客户端监听列表删除
    */
@@ -81,41 +88,47 @@ wss.on('connection', function(ws) {
           'nickname': item.nickname,
           'message': disconnect_message
         }
-        conns = []
-        broadcastSend(obj)
         clients.splice(index, 1)
+        broadcastSend(obj)
       }
     })
   }
   /* 监听消息*/
   ws.on('message', function(obj) {
     const objs = JSON.parse(obj)
-    if (!objs.id) {
-      var objse = {
-        'type': 'message',
-        'nickname': objs.name,
-        'message': objs.content + '群发'
-      }
-      conns = []
-      broadcastSend(objse)
-    } else {
-      var objst = {
-        'type': 'message',
-        'nickname': objs.name,
-        'message': objs.content + '單发'
-      }
-      String(objs.id).split('&').forEach((item, index) => {
-        clients.forEach((v, i) => {
-          if (Number(clients[i].id) === Number(objs.id.split('&')[index])) {
-            // console.log(v.nickname)
-            v.ws.send(JSON.stringify(objst))
-          }
+    if (objs.content !== '') {
+      if (!objs.id) {
+        var objse = {
+          'type': 'message',
+          'nickname': objs.name,
+          'message': objs.content + '群发'
+        }
+        broadcastSend(objse)
+      } else {
+        var objst = {
+          'type': 'message',
+          'nickname': objs.name,
+          'message': objs.content + '單发'
+        }
+        String(objs.id).split('&').forEach((item, index) => {
+          clients.forEach((v, i) => {
+            if (Number(clients[i].id) === Number(objs.id.split('&')[index])) {
+              // console.log(v.nickname)
+              v.ws.send(JSON.stringify(objst))
+            }
+          })
         })
+      }
+    }else {
+      clients.forEach((item) => {
+        if (item.id === objs.id) {
+
+        }
       })
     }
   })
   /* 监听断开连接*/
-  ws.on('close', function(obj) {
+  ws.on('close', () => {
     // console.log(obj,'-----断开连接的人员id')
     closeSocket()
   })

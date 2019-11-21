@@ -36,13 +36,15 @@ export default {
     return {
       MessageContent:'',
       content:'',
-      ws : new WebSocket("ws://localhost:8090"),
+      ws: '',
       message:'',
       names:'',
       userList:[],
       ids: '',
       contents:[],
-      Interval:null
+      time:1000,
+      Interval:null,
+      Interval2:null
     }
   },
   computed: {
@@ -51,35 +53,9 @@ export default {
     ])
   },
   created() {
-    this.list()
-    this.init()
+    this.info()
   },
-  mounted(){
-    this.Interval=setInterval(()=>{
-       // 收到消息处理
-      console.log(123)
-      
-      this.ws.onmessage = (e)=> {
-        var data = JSON.parse(e.data)
-        console.log(data)
-        console.log(data.message)
-        if (data.message === '') {
-          this.userList.push({nickname:data.nickname,id:data.id})
-        }
-        
-        var nickname = data.nickname
-        this.appendLog(data.type, data.nickname, data.message)
-        // console.log('ID: [%s] = %s', data.id, data.message)
-      }
-
-      this.ws.onclose = (e)=> {
-        // this.appendLog('Connection closed')
-      }
-      this.ws.error = (e)=> {
-        // this.appendLog('Connection closed')
-      }
-    },2000)
-  },
+  mounted(){},
   beforeDestroy() {
     console.log('连接断开')
     if(this.Interval) {
@@ -90,7 +66,7 @@ export default {
     }
   },  //利用vue的生命周期函数
   methods: {
-    list(){
+    info(){
       // console.log(this.name.split('').length)
       let name = this.name
       let id = this.name.split('').length
@@ -99,13 +75,12 @@ export default {
         name
       }
       request({
-        url: '/user/list',
+        url: 'webpack/info',
         method: 'post',
         data
       }).then(response => {
-        const { data } = response
-        console.log(data)
-        this.userList = data
+        this.ws = new WebSocket("ws://192.168.18.20:8090")
+        this.init()
       }).catch(error => {
         reject(error)
       })
@@ -119,10 +94,22 @@ export default {
       this.ws.onmessage = (e)=> {
         console.log(e.data)
         var data = JSON.parse(e.data)
+        if(data.message === ''){
+          this.userList.push({nickname:data.nickname,id:data.id})
+          return
+        }
         console.log(data)
         var nickname = data.nickname
         this.appendLog(data.type, data.nickname, data.message)
         console.log('ID: [%s] = %s', data.id, data.message)
+      }
+      this.ws.onclose = (e)=> {
+        let shuju = JSON.stringify({content:'',id:this.name.split('').length})
+        this.ws.send(shuju)
+        // this.appendLog('Connection closed')
+      }
+      this.ws.error = (e)=> {
+        // this.appendLog('Connection closed')
       }
     },
     appendLog(type, nickname, message) {
@@ -167,7 +154,7 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar-left{
-  width: 260px;
+  width: 15vw;
   height: calc(100vh - 90px);
   border-right: 1px #f8f8f8 solid;
   background: rgba(168, 223, 223, 0.349);
@@ -256,11 +243,15 @@ export default {
   }
 }
 .openSidebar .sidebar-right{
-  width: calc(100vw - 260px - 210px);
+  width: calc(100vw - 15vw - 210px);
   transition: 0.5s;
 }
 .hideSidebar .sidebar-right{
-  width: calc(100vw - 260px - 54px);
+  width: calc(100vw - 15vw - 54px);
+  transition: 0.5s;
+}
+.mobile .sidebar-right{
+  width: calc(100vw - 15vw);
   transition: 0.5s;
 }
 </style>
