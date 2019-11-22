@@ -15,7 +15,7 @@ const service = axios.create({
 service.interceptors.request.use(
   config => {
     // console.log(config)
-    // do something before request is sent
+    // do something before request is sent 在发出请求前做点什么
 
     // if (store.getters.token) {
     //   // let each request carry token
@@ -54,13 +54,12 @@ service.interceptors.response.use(
         type: 'error',
         duration: 5 * 1000
       })
-
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
+      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;50008:非法令牌；50012:其他客户端登录；50014:令牌过期；
       if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
-          confirmButtonText: 'Re-Login',
-          cancelButtonText: 'Cancel',
+        MessageBox.confirm('您的账户已过期，或已经在其他地点登录，请重新登录或更改密码！', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
           store.dispatch('user/resetToken').then(() => {

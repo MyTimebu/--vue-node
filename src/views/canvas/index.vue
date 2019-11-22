@@ -2,6 +2,7 @@
   <div>
     <vueCanvasPoster :painting="painting " @success="success"></vueCanvasPoster>
      <img :src="src">
+     <div>_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-</div>
   </div>
 </template>
 
@@ -224,7 +225,8 @@ export default {
           },
         ]
       },
-      src:''
+      src:'',
+      time:''
     }
   },
   created(){},

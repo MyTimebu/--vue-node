@@ -55,15 +55,11 @@ export default {
   created() {
     this.info()
   },
-  mounted(){},
+  mounted(){
+    window.addEventListener('beforeunload', this.beforeunloadFn)
+  },
   beforeDestroy() {
-    console.log('连接断开')
-    if(this.Interval) {
-      this.ws.onclose = (e)=> {
-        // this.appendLog('Connection closed')
-      }
-      clearInterval(this.Interval); //关闭
-    }
+    window.removeEventListener('beforeunload',this.beforeunloadFn)
   },  //利用vue的生命周期函数
   methods: {
     info(){
@@ -92,7 +88,6 @@ export default {
       }
       // 收到消息处理
       this.ws.onmessage = (e)=> {
-        console.log(e.data)
         var data = JSON.parse(e.data)
         if(data.message === ''){
           this.userList.push({nickname:data.nickname,id:data.id})
@@ -100,30 +95,29 @@ export default {
         }
         console.log(data)
         var nickname = data.nickname
-        this.appendLog(data.type, data.nickname, data.message)
+        this.appendLog(data.type, data.nickname, data.message, data)
         console.log('ID: [%s] = %s', data.id, data.message)
       }
-      this.ws.onclose = (e)=> {
-        let shuju = JSON.stringify({content:'',id:this.name.split('').length})
-        this.ws.send(shuju)
-        // this.appendLog('Connection closed')
+      let id = JSON.stringify(this.name.split('').length)
+      this.ws.onclose = ()=> {
+        console.log('连接已经断开请等待')
       }
-      this.ws.error = (e)=> {
-        // this.appendLog('Connection closed')
-      }
+      this.ws.error = (e)=> {}
     },
-    appendLog(type, nickname, message) {
-      console.log(typeof message, typeof message === 'undefined')
-      // if (typeof message === 'undefined') {
-      //   return
-      // } 
+    beforeunloadFn(e) {
+      console.log('刷新或关闭')
+      alert('刷新或关闭')
+      let shuju = JSON.stringify({content:'',id:this.name.split('').length})
+      this.ws.send(shuju)
+      // ...
+    },
+    appendLog(type, nickname, message,data) {
+      if(type === 'list'){
+        this.userList = JSON.parse(data.list)
+        this.contents.push({nickname,message})
+        return
+      }
       this.contents.push({nickname,message})
-      // var preface_label
-      // var message_text
-      // console.log(
-      //   preface_label,
-      //   message_text,'----------------'
-      // )
     },
     // 发送消息
     sendMessage() {
@@ -133,8 +127,7 @@ export default {
           type: 'warning'
         })
         return
-      }
-      
+      }     
       let shuju
       if(this.ids!==''){
         shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
@@ -146,7 +139,6 @@ export default {
         this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''
-      // messageField.focus()
     }
   },
 }
