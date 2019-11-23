@@ -1,11 +1,10 @@
 <template>
   <div class="login-container">
+    <backgroundUrl />
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
-
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">登录</h3>
       </div>
-
       <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon icon-class="user" />
@@ -20,7 +19,6 @@
           auto-complete="on"
         />
       </el-form-item>
-
       <el-form-item prop="password">
         <span class="svg-container">
           <svg-icon icon-class="password" />
@@ -40,23 +38,23 @@
           <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
         </span>
       </el-form-item>
-
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
-
       <div class="tips">
         <span style="margin-right:20px;">可用账户为: 'admin', 'editor', 'test'</span>
-        <span> password: {{timer}}</span>
+        <span> password: {{ timer }}</span>
       </div>
-
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-
+import backgroundUrl from './background'
 export default {
   name: 'Login',
+  components: {
+    backgroundUrl
+  },
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
@@ -84,11 +82,8 @@ export default {
       loading: false,
       passwordType: 'password',
       redirect: undefined,
-      timer:60,
+      timer: 60
     }
-  },
-  mounted(){
-    this.bibao()
   },
   watch: {
     $route: {
@@ -97,6 +92,9 @@ export default {
       },
       immediate: true
     }
+  },
+  mounted() {
+    this.bibao()
   },
   methods: {
     showPwd() {
@@ -125,17 +123,17 @@ export default {
         }
       })
     },
-    bibao:(()=>{
-      return function () {
+    bibao: (() => {
+      return function() {
         // console.log(this); // Vue的顶级对象
-        if(this.timer == 0){
+        if (this.timer === 0) {
           this.timer = 60
           return
-        }else{
+        } else {
           this.timer--
-          setTimeout(()=>{
+          setTimeout(() => {
             this.bibao()
-          },1000)
+          }, 1000)
         }
       }
     })()
@@ -208,6 +206,12 @@ $light_gray:#eee;
     padding: 160px 35px 0;
     margin: 0 auto;
     overflow: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
   }
 
   .tips {

@@ -34,17 +34,17 @@ import request from '@/utils/request'
 export default {
   data() {
     return {
-      MessageContent:'',
-      content:'',
+      MessageContent: '',
+      content: '',
       ws: '',
-      message:'',
-      names:'',
+      message: '',
+      names: '',
       userList:[],
       ids: '',
-      contents:[],
-      time:1000,
-      Interval:null,
-      Interval2:null
+      contents: [],
+      time: 1000,
+      Interval: null,
+      Interval2: null
     }
   },
   computed: {
@@ -55,18 +55,18 @@ export default {
   created() {
     this.info()
   },
-  mounted(){
+  mounted() {
     window.addEventListener('beforeunload', this.beforeunloadFn)
   },
   beforeDestroy() {
-    window.removeEventListener('beforeunload',this.beforeunloadFn)
-  },  //利用vue的生命周期函数
+    window.removeEventListener('beforeunload', this.beforeunloadFn)
+  },  // 利用vue的生命周期函数
   methods: {
-    info(){
+    info() {
       // console.log(this.name.split('').length)
-      let name = this.name
-      let id = this.name.split('').length
-      let data = {
+      const name = this.name
+      const id = this.name.split('').length
+      const data = {
         id,
         name
       }
@@ -75,72 +75,71 @@ export default {
         method: 'post',
         data
       }).then(response => {
-        this.ws = new WebSocket("ws://192.168.18.20:8090")
+        this.ws = new WebSocket('ws://192.168.18.20:8090')
         this.init()
       }).catch(error => {
-        reject(error)
+        this.$message.error(error);
       })
     },
-    init(){
+    init() {
       // let ws = new WebSocket("ws://localhost:8090");
-      this.ws.onopen = function (e) {
-        console.log('Connection to server opened');
+      this.ws.onopen = function(e) {
+        console.log('Connection to server opened')
       }
       // 收到消息处理
-      this.ws.onmessage = (e)=> {
+      this.ws.onmessage = (e) => {
         var data = JSON.parse(e.data)
-        if(data.message === ''){
-          this.userList.push({nickname:data.nickname,id:data.id})
+        if (data.message === '') {
+          this.userList.push({ nickname: data.nickname, id: data.id })
           return
         }
         console.log(data)
-        var nickname = data.nickname
+        // var nickname = data.nickname
         this.appendLog(data.type, data.nickname, data.message, data)
         console.log('ID: [%s] = %s', data.id, data.message)
       }
-      let id = JSON.stringify(this.name.split('').length)
-      this.ws.onclose = ()=> {
+      // let id = JSON.stringify(this.name.split('').length)
+      this.ws.onclose = () => {
         console.log('连接已经断开请等待')
       }
-      this.ws.error = (e)=> {}
+      this.ws.error = (e) => {}
     },
     beforeunloadFn(e) {
       console.log('刷新或关闭')
       alert('刷新或关闭')
-      let shuju = JSON.stringify({content:'',id:this.name.split('').length})
+      const shuju = JSON.stringify({ content: '', id: this.name.split('').length })
       this.ws.send(shuju)
       // ...
     },
-    appendLog(type, nickname, message,data) {
-      if(type === 'list'){
+    appendLog(type, nickname, message, data) {
+      if (type === 'list') {
         this.userList = JSON.parse(data.list)
-        this.contents.push({nickname,message})
+        this.contents.push({ nickname, message })
         return
       }
-      this.contents.push({nickname,message})
+      this.contents.push({ nickname, message })
     },
     // 发送消息
     sendMessage() {
-      if(this.$refs.divcontent.innerHTML.replace(/\s/g,"") === ''){
+      if (this.$refs.divcontent.innerHTML.replace(/\s/g, '') === '') {
         this.$message({
           message: '输入不能为空',
           type: 'warning'
         })
         return
-      }     
-      let shuju
-      if(this.ids!==''){
-        shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,id:this.name.split('').length+'&'+this.ids,name:this.name})
-      }else{
-        shuju = JSON.stringify({content:this.$refs.divcontent.innerHTML,name:this.name})
       }
-      
+      let shuju
+      if (this.ids !== '') {
+        shuju = JSON.stringify({ content: this.$refs.divcontent.innerHTML, id: this.name.split('').length + '&' + this.ids, name: this.name })
+      } else {
+        shuju = JSON.stringify({ content: this.$refs.divcontent.innerHTML, name: this.name })
+      }
       if (this.ws.readyState === WebSocket.OPEN) {
         this.ws.send(shuju)
       }
       this.$refs.divcontent.innerHTML = ''
     }
-  },
+  }
 }
 </script>
 
