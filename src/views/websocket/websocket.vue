@@ -1,28 +1,28 @@
 <template>
   <div style="display: flex;">
     <div class="sidebar-left">
-      <div @click="ids=''" class="left-name">
+      <div class="left-name" @click="ids=''">
         <img src="@/assets/images/1.jpeg">
         <div class="name">群聊</div>
         <div class="content">一群</div>
         <div class="time">08:31</div>
       </div>
-      <div v-for="(item,index) in userList" v-if="item.nickname !== name" :key="index" @click="ids=item.id" class="left-name">
+      <div v-for="(item,index) in userList" v-show="item.nickname !== name" :key="index" class="left-name" @click="ids=item.id">
         <img src="@/assets/images/1.jpeg">
-        <div class="name">{{item.id}}---{{item.nickname}}</div>
+        <div class="name">{{ item.id }}---{{ item.nickname }}</div>
         <div class="content">测试热数据只为测试使用内容有限暂时这样</div>
         <div class="time">08:31</div>
       </div>
     </div>
     <div class="sidebar-right">
       <div class="top">
-        <div v-for="(item,index) in contents" :key="index" :class="item.nickname != name?'ChatContent':'ChatContent-right'">{{item.nickname}}:{{item.message}}</div>
+        <div v-for="(item,index) in contents" :key="index" :class="item.nickname != name?'ChatContent':'ChatContent-right'">{{ item.nickname }}:{{ item.message }}</div>
         <!-- <div class="ChatContent-right">{{names}}:{{message}}</div> -->
       </div>
       <div class="bottom">
         <div class="Label">1</div>
-        <div class="InputPanel" ref="divcontent" contenteditable="true">1</div>
-        <el-button type="primary" @click="sendMessage" size="small">发送</el-button>
+        <div ref="divcontent" class="InputPanel" contenteditable="true">1</div>
+        <el-button type="primary" size="small" @click="sendMessage">发送</el-button>
       </div>
     </div>
   </div>
@@ -39,7 +39,7 @@ export default {
       ws: '',
       message: '',
       names: '',
-      userList:[],
+      userList: [],
       ids: '',
       contents: [],
       time: 1000,
@@ -60,7 +60,7 @@ export default {
   },
   beforeDestroy() {
     window.removeEventListener('beforeunload', this.beforeunloadFn)
-  },  // 利用vue的生命周期函数
+  }, // 利用vue的生命周期函数
   methods: {
     info() {
       // console.log(this.name.split('').length)
@@ -75,10 +75,10 @@ export default {
         method: 'post',
         data
       }).then(response => {
-        this.ws = new WebSocket('ws://192.168.18.20:8090')
+        this.ws = new WebSocket('ws://192.168.1.121:8090')
         this.init()
       }).catch(error => {
-        this.$message.error(error);
+        this.$message.error(error)
       })
     },
     init() {

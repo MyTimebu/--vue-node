@@ -1,20 +1,20 @@
 <template>
   <div>
-    <vueCanvasPoster :painting="painting " @success="success"></vueCanvasPoster>
-     <img :src="src">
-     <div>_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-</div>
+    <vueCanvasPoster :painting="painting " @success="success" />
+    <img :src="src" alt="">
+    <div>_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-</div>
   </div>
 </template>
 
 <script>
-import {vueCanvasPoster} from "vue-canvas-poster";
+import { vueCanvasPoster } from 'vue-canvas-poster'
 export default {
   components: {
     vueCanvasPoster
   },
   data() {
-    return  {
-      painting:{
+    return {
+      painting: {
         width: 560,
         height: 785,
         views: [
@@ -51,7 +51,7 @@ export default {
             top: 150,
             content: `当面扫码立即付款`,
             textAlign: 'left',
-            color:'#666'
+            color: '#666'
           },
           {
             type: 'text',
@@ -59,7 +59,7 @@ export default {
             top: 270,
             content: `二维码付款`,
             textAlign: 'left',
-            color:'#eb7856'
+            color: '#eb7856'
           },
           // {
           //   type: 'rect',
@@ -75,13 +75,13 @@ export default {
             left: 180,
             top: 350,
             background: '#fff',
-            color:'#fd7038',
+            color: '#fd7038',
             width: 200,
             height: 200
           }
-        ],
+        ]
       },
-      paintings:{
+      paintings: {
         width: 550,
         height: 876,
         views: [
@@ -111,7 +111,7 @@ export default {
             left: 136,
             width: 360,
             breakWord: true,
-            MaxLineNumber: 1,
+            MaxLineNumber: 1
           },
           {
             type: 'rect',
@@ -129,7 +129,7 @@ export default {
             left: 25,
             top: 150,
             width: 332,
-            height: 332,
+            height: 332
           },
           // 网络图片
           {
@@ -166,7 +166,7 @@ export default {
             content: `劲爆价:`,
             fontSize: 24,
             top: 608,
-            left: 26,
+            left: 26
           },
           {
             type: 'text',
@@ -222,14 +222,14 @@ export default {
             top: 690,
             width: 130,
             height: 130
-          },
+          }
         ]
       },
-      src:'',
-      time:''
+      src: '',
+      time: ''
     }
   },
-  created(){},
+  created() {},
   methods: {
     success(src) {
       // 设置img的src
@@ -239,7 +239,7 @@ export default {
   },
   fail(err) {
     console.log('fail', err)
-  } 
+  }
 }
 </script>
 
