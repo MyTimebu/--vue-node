@@ -38,10 +38,10 @@ export default {
       //* ************* Shader sources **************
 
       var vertexSource = `
-      attribute vec2 position;
-      void main() {
-        gl_Position = vec4(position, 0.0, 1.0);
-      }
+        attribute vec2 position;
+        void main() {
+          gl_Position = vec4(position, 0.0, 1.0);
+        }
       `
 
       var fragmentSource = `
