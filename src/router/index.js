@@ -104,6 +104,19 @@ export const constantRoutes = [
   },
 
   {
+    path: '/luck',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '命运转盘',
+        component: () => import('@/views/luck/index'),
+        meta: { title: '命运转盘', icon: 'luck' }
+      }
+    ]
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [

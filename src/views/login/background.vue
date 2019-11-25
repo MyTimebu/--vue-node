@@ -1,5 +1,5 @@
 ﻿<template>
-  <div>
+  <div class="zong">
     <canvas id="canvass" width="1400" height="600" />
     <div class="waves" />
   </div>
@@ -719,7 +719,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url('./style.css');
+// @import url('./style.css');
+// .zong {
+//   margin: 0;
+//   overflow: hidden;
+//   // background-repeat: no-repeat;
+// }
 .waves{
   width: 100vw;
   height: 100vh;
