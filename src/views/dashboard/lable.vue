@@ -1,28 +1,28 @@
 <template>
   <div>
     <div class="lable">
-      <div class="ren">
+      <div @click="FatherChildData(12)" class="ren">
         <i class="el-icon-s-custom"></i>
         <center>
           <p ref='countup'><count-to :start-val="0" :end-val="580" :duration="3200" /></p>
           <p>登陆人数</p>
         </center>
       </div>
-      <div class="code">
+      <div @click="FatherChildData(40)" class="code">
         <i class="el-icon-s-order"></i>
         <center>
           <p ref='countup'><count-to :start-val="0" :end-val="280" :duration="3200" /></p>
           <p>代码量</p>
         </center>
       </div>
-      <div class="xing">
+      <div @click="FatherChildData(60)" class="xing">
         <i class="el-icon-star-on"></i>
         <center>
           <p ref='countup'><count-to :start-val="0" :end-val="880" :duration="3200" /></p>
           <p>星星</p>
         </center>
       </div>
-      <div class="yinqing">
+      <div @click="FatherChildData(38)" class="yinqing">
         <i class="el-icon-s-help"></i>
         <center>
           <p ref='countup'><count-to :start-val="0" :end-val="9280" :duration="3200" /></p>
@@ -30,7 +30,7 @@
         </center>
       </div>
     </div>
-    <multiple></multiple>
+    <multiple :prop="datas"></multiple>
   </div>
   
 </template>
@@ -50,7 +50,11 @@ export default {
       options: {
         startVal: 1000
       },
-      endCount: 2019
+      endCount: 2019,
+      datas: {
+        'yw': [114.6, 175.9, 180.0, 126.4, 128.7, 150.7],
+        'yl': [100.9, 197.9, 198.1, 88.7, 75.3, 169.2]
+      }
     }
   },
   mounted () {
@@ -58,6 +62,19 @@ export default {
   methods: {
     handleSetLineChartData(type) {
       // this.$emit('handleSetLineChartData', type)
+    },
+    FatherChildData(i) {
+      let shu,shu2
+      shu = this.datas.yl.map(item=>{
+        return item+i
+      })
+      
+      shu2 = this.datas.yw.map(item=>{
+        return item+i
+      })
+      this.datas.yw = shu
+      this.datas.yl = shu2
+      console.log(this.datas)
     }
   }
 }
@@ -183,7 +200,7 @@ export default {
     }
   }
 }
-@media screen and (max-width: 400px) { 
+@media screen and (max-width: 500px) { 
   .hideSidebar .lable{
     div{
       width: 100vw;
