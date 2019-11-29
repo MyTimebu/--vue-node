@@ -14,6 +14,7 @@
         </div>
       </el-col>
     </el-row>
+    <tables />
     <!-- <div class="dashboard-text">name: {{ name }}</div> -->
   </div>
 </template>
@@ -22,11 +23,13 @@
 import { mapGetters } from 'vuex'
 import lable from './lable'
 import TotalData from './TotalData'
+import tables from './table/table'
 export default {
   name: 'Dashboard',
   components: {
     lable,
-    TotalData
+    TotalData,
+    tables
   },
   computed: {
     ...mapGetters([

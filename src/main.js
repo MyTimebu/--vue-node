@@ -14,6 +14,10 @@ import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
 
+// 请求接口方法公共，注：因是个人所以目前不存在复杂页面的调用实行本页面掉接口
+import request from '@/utils/request'
+Vue.prototype.request = request
+
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api

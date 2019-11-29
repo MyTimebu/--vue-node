@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width:100%">
     <div class="className" ref="myEchart"></div>
   </div>
 </template>
@@ -19,9 +19,9 @@ export default {
     this.initChart();
     this.xuanran(this.prop);
     //  根据窗口大小调整曲线大小
-    window.onresize = () => {
-      this.chart.resize();
-    };
+    // window.onresize = () => {
+    //   this.xuanran();
+    // };
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -34,7 +34,7 @@ export default {
     initChart() {
       this.chart = echarts.init(this.$refs.myEchart);
       // 把配置和数据放这里
-      this.chart.resize();
+      // this.chart.resize();
     },
     xuanran(prop) {
       function createNodes(widthCount, heightCount) {

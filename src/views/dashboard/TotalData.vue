@@ -1,59 +1,81 @@
 <template>
   <div class="TotalData">
-    <el-row :gutter="20">
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-          <RelationDiagram></RelationDiagram>
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-
-        </div>
-      </el-col>
-      <el-col :span="8">
-        <div class="grid-content bg-purple">
-          
-        </div>
-      </el-col>
-    </el-row>
+    <div>
+      <RelationDiagram></RelationDiagram>
+    </div>
+    <div>
+      <test></test>
+    </div>
   </div>
 </template>
 
 <script>
 import RelationDiagram from './echarts/RelationDiagram'
+import test from './echarts/test'
 export default {
   components:{
-    RelationDiagram
+    RelationDiagram,
+    test
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.el-row {
-  margin-bottom: 20px;
-  &:last-child {
-    margin-bottom: 0;
+.TotalData{
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  div{
+    border-radius: 10px;
+    background: #000;
+    &:nth-of-type(1){
+      width: 49%;
+      border-radius: 10px;
+    }
+    &:nth-of-type(2){
+      width: 49%;
+      overflow: hidden;
+      border-radius: 10px;
+    }
   }
 }
-.el-col {
-  border-radius: 4px;
+@media screen and (max-width: 900px) { 
+  .TotalData{
+    width: 100%;
+    div{
+      border-radius: 10px;
+      background: #000;
+      &:nth-of-type(1){
+        width: 100%;
+        border-radius: 10px;
+      }
+      &:nth-of-type(2){
+        margin-top: 20px;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+    }
+  }
 }
-.bg-purple-dark {
-  background: #99a9bf;
-}
-.bg-purple {
-  background: #d3dce6;
-}
-.bg-purple-light {
-  background: #e5e9f2;
-}
-.grid-content {
-  border-radius: 4px;
-  min-height: 36px;
-}
-.row-bg {
-  padding: 10px 0;
-  background-color: #f9fafc;
+@media screen and (max-width: 500px) { 
+  .TotalData{
+    display: none;
+    div{
+      border-radius: 10px;
+      background: #000;
+      &:nth-of-type(1){
+        width: 100%;
+        border-radius: 10px;
+      }
+      &:nth-of-type(2){
+        margin-top: 20px;
+        width: 100%;
+        overflow: hidden;
+        border-radius: 10px;
+      }
+    }
+  }
 }
 </style>

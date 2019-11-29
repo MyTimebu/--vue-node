@@ -2,6 +2,7 @@
 const express = require('express')
 // 2. 创建路有对象
 const router = express.Router()
+const fs = require('fs')
 // var querystring = require('querystring')
 // 加载 数据库操作模块
 // const db = require('./db.js')
@@ -50,6 +51,111 @@ router.post('/list', (req, res) => {
   // console.log(clients)
   const status = { code: 20000, message: '一切正常', data: '' }
   res.json(status)
+})
+router.post('/table/list', (req, res) => {
+  var alldata = ''
+  req.on('data', function(chunk) {
+    alldata += chunk
+  })
+  var person
+  fs.readFile('./TableData.json', (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    alldata = JSON.parse(alldata.toString())
+    person = data.toString() // 将二进制的数据转换为字符串
+    person = JSON.parse(person)
+    person.data = person.data.slice(Number(alldata.page) === 1 ? 0 : (Number(alldata.page) - 1) * 10, Number(alldata.page) * 10)
+    const status = { code: 20000, message: '一切正常', data: person }
+    res.json(status)
+  })
+})
+router.post('/table/edit', (req, res) => {
+  var alldata = ''
+  req.on('data', function(chunk) {
+    alldata += chunk
+  })
+  var person
+  fs.readFile('./TableData.json', (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    alldata = JSON.parse(alldata.toString())
+    person = JSON.parse(data.toString())
+    // 将二进制的数据转换为字符串在专为json数组
+    console.log(alldata)
+    person.data[alldata.inde].name = alldata.name
+    person.data[alldata.inde].address = alldata.address
+    var str = JSON.stringify(person) // 因为nodejs的写入文件只认识字符串或者二进制数，所以把json对象转换成字符串重新写入json文件中
+    fs.writeFile('./TableData.json', str, function(err) {
+      if (err) {
+        console.error(err)
+      }
+      const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+      res.json(status)
+      return
+    })
+    const status = { code: 20000, message: '更改成功', data: '' }
+    res.json(status)
+  })
+})
+// 删
+router.post('/table/delete', (req, res) => {
+  var alldata = ''
+  req.on('data', function(chunk) {
+    alldata += chunk
+  })
+  var person
+  fs.readFile('./TableData.json', (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    alldata = JSON.parse(alldata.toString())
+    person = JSON.parse(data.toString())
+    // 将二进制的数据转换为字符串在专为json数组
+    person.data.splice(alldata.inde, 1)
+    person.total = person.data.length
+    var str = JSON.stringify(person) // 因为nodejs的写入文件只认识字符串或者二进制数，所以把json对象转换成字符串重新写入json文件中
+    fs.writeFile('./TableData.json', str, function(err) {
+      if (err) {
+        console.error(err)
+      }
+      const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+      res.json(status)
+      return
+    })
+    const status = { code: 20000, message: '删除成功', data: '' }
+    res.json(status)
+  })
+})
+router.post('/table/Add', (req, res) => {
+  var alldata = ''
+  req.on('data', function(chunk) {
+    alldata += chunk
+  })
+  var person
+  fs.readFile('./TableData.json', (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    alldata = JSON.parse(alldata.toString())
+    person = JSON.parse(data.toString())
+    // 将二进制的数据转换为字符串在专为json数组
+    alldata.id = person.data.length + 1
+    person.data.push(alldata)
+    person.total = person.data.length
+    var str = JSON.stringify(person) // 因为nodejs的写入文件只认识字符串或者二进制数，所以把json对象转换成字符串重新写入json文件中
+    fs.writeFile('./TableData.json', str, function(err) {
+      if (err) {
+        console.error(err)
+      }
+      const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+      res.json(status)
+      return
+    })
+    const status = { code: 20000, message: '增加成功', data: '' }
+    res.json(status)
+  })
 })
 // 监听 /modifystu
 //  接收edit.html中表单提交的数据，拼接update的SQL语句，再执行，执行成功之后跳转回 /index
