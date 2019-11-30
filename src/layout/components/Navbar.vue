@@ -3,7 +3,6 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
@@ -16,6 +15,9 @@
               Home
             </el-dropdown-item>
           </router-link>
+          <el-dropdown-item>
+            <div @click="drawer = true">记录板</div>
+          </el-dropdown-item>
           <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
             <el-dropdown-item>Github</el-dropdown-item>
           </a>
@@ -28,6 +30,38 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-drawer
+      title="当前位置：记录板"
+      :visible.sync="drawer"
+      :direction="direction"
+      :before-close="handleClose">
+      <div style="margin-top: 15px;">
+        <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+          <template slot="prepend">
+            <el-checkbox :indeterminate="isIndeterminate" v-model="checkAll" @change="handleCheckAllChange">全选</el-checkbox>
+          </template>
+          <el-button slot="append" icon="el-icon-coffee-cup"></el-button>
+        </el-input>
+      </div>
+      <div>
+        <h2>正在进行：</h2>
+        <div class="Underway">
+          <div v-for="city in weixuanzhong" :key="city">
+            <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+              <el-checkbox  :label="city" >{{city}}</el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </div>
+        <h2>已经完成：</h2>
+        <div>
+          <div v-for="city in checkedCities" :key="city">
+            <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+              <el-checkbox  :label="city" >{{city}}</el-checkbox>
+            </el-checkbox-group>
+          </div>
+        </div>
+      </div>
+    </el-drawer>
   </div>
 </template>
 
@@ -47,6 +81,26 @@ export default {
       'avatar'
     ])
   },
+  data() {
+    
+    return {
+      drawer: false,
+      direction: 'rtl',
+      input3: '',
+      select: '',
+      checkAll: false,
+      checkedCities: ['上海', '北京'],
+      cities: [],
+      weixuanzhong: [],
+      isIndeterminate: true
+    }
+  },
+  created() {
+    const cityOptions = ['上海', '北京', '广州', '深圳']
+    this.cities = cityOptions
+    this.weixuanzhong = this.cities
+    this.bibao()
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('app/toggleSideBar')
@@ -54,7 +108,62 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    }
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？')
+      .then(_ => {
+        done();
+      })
+      .catch(_ => {});
+    },
+    handleCheckAllChange(val) {
+      const cityOptions = ['上海', '北京', '广州', '深圳'];
+      this.checkedCities = val ? cityOptions : [];
+      this.isIndeterminate = false;
+    },
+    handleCheckedCitiesChange(value) {
+      let checkedCount = value.length
+      this.checkAll = checkedCount === this.cities.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length
+      this.cities.forEach(item=>{
+        this.checkedCities.forEach(items=>{
+          if (item === items) {
+            this.xuanzhong.push(item)
+          } else {
+            this.weixuanzhong.push(item)
+          }
+        })
+      })
+    },
+    bibao: (() => {
+      return function() {
+        console.log(this.weixuanzhong)
+        for (let index = 0; index < this.weixuanzhong.length; index++) {
+          for(let i = 0; i < this.checkedCities.length; i++){
+            if(this.weixuanzhong[index]===this.checkedCities[i]){
+              this.weixuanzhong = this.weixuanzhong.splice(index,1)
+              this.bibao()
+              
+            }
+          }
+        }
+        // this.weixuanzhong.forEach((item,index)=>{
+        //   this.checkedCities
+        //     if(item===items){
+        //       console.log(this.weixuanzhong)
+              
+        //       console.log(this.weixuanzhong)
+        //       this.bibao()
+        //       return true
+        //     }else{
+        //       if(index===this.weixuanzhong.length){
+        //         return true
+        //       }
+        //     }
+          
+        // })
+      }
+    })()
   }
 }
 </script>
@@ -133,6 +242,25 @@ export default {
           font-size: 12px;
         }
       }
+    }
+  }
+}
+.Underway{
+  padding: 20px;
+  box-sizing: border-box;
+  >div{
+    width: 100%;
+    height: 30px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px rgb(223, 223, 223);
+    position: relative;
+    margin-top: 10px;
+    padding-top: 6px;
+    padding-left: 8px;
+    box-sizing: border-box;
+    &:nth-child(1){
+      margin-top: 0px;
     }
   }
 }
