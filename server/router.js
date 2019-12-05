@@ -70,6 +70,7 @@ router.post('/table/list', (req, res) => {
     res.json(status)
   })
 })
+// 改
 router.post('/table/edit', (req, res) => {
   var alldata = ''
   req.on('data', function(chunk) {
@@ -128,6 +129,7 @@ router.post('/table/delete', (req, res) => {
     res.json(status)
   })
 })
+// 增
 router.post('/table/Add', (req, res) => {
   var alldata = ''
   req.on('data', function(chunk) {
@@ -146,6 +148,36 @@ router.post('/table/Add', (req, res) => {
     person.total = person.data.length
     var str = JSON.stringify(person) // 因为nodejs的写入文件只认识字符串或者二进制数，所以把json对象转换成字符串重新写入json文件中
     fs.writeFile('./TableData.json', str, function(err) {
+      if (err) {
+        console.error(err)
+      }
+      const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+      res.json(status)
+      return
+    })
+    const status = { code: 20000, message: '增加成功', data: '' }
+    res.json(status)
+  })
+})
+// 记录板区域RecordingBoard
+router.post('/table/Add', (req, res) => {
+  var alldata = ''
+  req.on('data', function(chunk) {
+    alldata += chunk
+  })
+  var person
+  fs.readFile('./RecordingBoard/RecordingBoard.json', (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    alldata = JSON.parse(alldata.toString())
+    person = JSON.parse(data.toString())
+    // 将二进制的数据转换为字符串在专为json数组
+    alldata.id = person.data.length + 1
+    person.data.push(alldata)
+    person.total = person.data.length
+    var str = JSON.stringify(person) // 因为nodejs的写入文件只认识字符串或者二进制数，所以把json对象转换成字符串重新写入json文件中
+    fs.writeFile('./RecordingBoard/RecordingBoard.json', str, function(err) {
       if (err) {
         console.error(err)
       }
