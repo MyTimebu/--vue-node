@@ -11,9 +11,9 @@ function loadWidget(waifuPath, apiPath) {
 			<canvas id="live2d" width="300" height="300"></canvas>
 			<div id="waifu-tool">
 				<span class="fa fa-lg fa-comment"></span>
-				<span class="fa fa-lg fa-paper-plane"></span>
-				<span class="fa fa-lg fa-user-circle"></span>
-				<span class="fa fa-lg fa-street-view"></span>
+				<span class="fa fa-lg fa-paper-plane el-icon-coordinate"></span>
+				<span class="fa fa-lg fa-user-circle el-icon-position"></span>
+				<span class="fa fa-lg fa-street-view el-icon-coordinate"></span>
 				<span class="fa fa-lg fa-camera-retro"></span>
 				<span class="fa fa-lg fa-info-circle"></span>
 				<span class="fa fa-lg fa-times"></span>
@@ -29,7 +29,7 @@ function loadWidget(waifuPath, apiPath) {
 				window.ASTEROIDSPLAYERS.push(new Asteroids());
 			} else {
 				$.ajax({
-					url: "https://cdn.jsdelivr.net/gh/GalaxyMimi/CDN/asteroids.js",
+					url: "./asteroids.js",
 					dataType: "script",
 					cache: true
 				});
@@ -69,7 +69,7 @@ function loadWidget(waifuPath, apiPath) {
 	registerEventListener();
 
 	function welcomeMessage() {
-		var SiteIndexUrl = `${location.protocol}//${location.host}/`, text; //自动获取主页
+		var SiteIndexUrl = `${location.protocol}//${location.host}/dashboard`, text; //自动获取主页
 		if (location.href == SiteIndexUrl) { //如果是主页
 			var now = new Date().getHours();
 			if (now > 5 && now <= 7) text = "早上好！一日之计在于晨，美好的一天就要开始了。";
@@ -119,13 +119,13 @@ function loadWidget(waifuPath, apiPath) {
 	function showHitokoto() {
 		//增加 hitokoto.cn 的 API
 		if (Math.random() < 0.6 && messageArray.length > 0) showMessage(messageArray[Math.floor(Math.random() * messageArray.length)], 6000, 9);
-		else $.getJSON("https://v1.hitokoto.cn", function(result) {
-				var text = `这句一言来自 <span style="color:#0099cc;">『${result.from}』</span>，是 <span style="color:#0099cc;">${result.creator}</span> 在 hitokoto.cn 投稿的。`;
-			showMessage(result.hitokoto, 6000, 9);
-			setTimeout(() => {
+		// else $.getJSON("https://v1.hitokoto.cn", function(result) {
+				var text = `唯有永恒，可见真相！`;
+		// 	showMessage(result.hitokoto, 6000, 9);
+		// 	setTimeout(() => {
 				showMessage(text, 4000, 9);
-			}, 6000);
-		});
+		// 	}, 6000);
+		// });
 	}
 
 	function showMessage(text, timeout, priority) {
@@ -137,6 +137,7 @@ function loadWidget(waifuPath, apiPath) {
 			}
 			if (Array.isArray(text)) text = text[Math.floor(Math.random() * text.length)];
 			sessionStorage.setItem("waifu-text", priority);
+			// window.speechSynthesis.speak(new window.SpeechSynthesisUtterance(text))
 			$("#waifu-tips").stop().html(text).fadeTo(200, 1);
 			messageTimer = setTimeout(() => {
 				sessionStorage.removeItem("waifu-text");
@@ -152,6 +153,9 @@ function loadWidget(waifuPath, apiPath) {
 			//首次访问加载 指定模型 的 指定材质
 			var modelId = 1, //模型 ID
 				modelTexturesId = 53; //材质 ID
+		}
+		if(Number(modelId) === 1){
+			$("#waifu").css({ "bottom": '-9px' });
 		}
 		loadModel(modelId, modelTexturesId);
 		$.getJSON(waifuPath, function(result) {
