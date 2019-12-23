@@ -234,7 +234,6 @@ export default {
     success(src) {
       // 设置img的src
       this.src = src
-      console.log(this.src)
     }
   },
   fail(err) {

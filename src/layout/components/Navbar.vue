@@ -10,7 +10,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" />
+          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -39,126 +39,208 @@
       :before-close="handleClose"
     >
       <div style="margin-top: 15px;">
-        <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+        <el-input v-model="input3" placeholder="请输入内容" class="input-with-select">
           <template slot="prepend">
             <el-checkbox
-              :indeterminate="isIndeterminate"
               v-model="checkAll"
+              :indeterminate="isIndeterminate"
               @change="handleCheckAllChange"
             >全选</el-checkbox>
           </template>
-          <el-button slot="append" icon="el-icon-coffee-cup"></el-button>
+          <el-button slot="append" icon="el-icon-coffee-cup" @click="Add" />
         </el-input>
       </div>
       <div>
         <h2>正在进行：</h2>
-        <div class="Underway">
-          <div v-for="city in weixuanzhong" :key="city">
-            <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
-              <el-checkbox :label="city">{{city}}</el-checkbox>
-            </el-checkbox-group>
-            <i class="el-icon-close"></i>
+        <el-collapse-transition>
+          <div class="Underway">
+            <div v-for="(city) in weixuanzhong" :key="city.id">
+              <el-checkbox-group v-model="checkedCities" @change="handleCheckedCitiesChange">
+                <el-checkbox :label="city">{{ city.content }}</el-checkbox>
+              </el-checkbox-group>
+              <i class="el-icon-close" @click="del(city.id)" />
+            </div>
           </div>
-        </div>
+        </el-collapse-transition>
         <h2>已经完成：</h2>
-        <div class="Underway">
-          <div v-for="city in xuanzhong" :key="city">
-            <el-checkbox-group
-              v-model="checkedCities"
-              @click="handleCheckedCitiesChange"
-              @change="handleCheckedCitiesChange"
-            >
-              <el-checkbox :label="city">{{city}}</el-checkbox>
-            </el-checkbox-group>
-            <i class="el-icon-close"></i>
+        <el-collapse-transition>
+          <div class="Underway">
+            <div v-for="(city) in xuanzhong" :key="city.id">
+              <el-checkbox-group
+                v-model="checkedCities"
+                @click="handleCheckedCitiesChange"
+                @change="handleCheckedCitiesChange"
+              >
+                <el-checkbox :label="city">{{ city.content }}</el-checkbox>
+              </el-checkbox-group>
+              <i class="el-icon-close" @click="del(city.id)" />
+            </div>
           </div>
-        </div>
+        </el-collapse-transition>
       </div>
     </el-drawer>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
-import Breadcrumb from "@/components/Breadcrumb";
-import Hamburger from "@/components/Hamburger";
+import { mapGetters } from 'vuex'
+import Breadcrumb from '@/components/Breadcrumb'
+import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
     Breadcrumb,
     Hamburger
   },
-  computed: {
-    ...mapGetters(["sidebar", "avatar"])
-  },
   data() {
     return {
       drawer: false,
-      direction: "rtl",
-      input3: "",
-      select: "",
+      direction: 'rtl',
+      input3: '',
+      select: '',
       checkAll: false,
-      checkedCities: ["上海", "北京"],
+      checkedCities: [],
       cities: [],
       weixuanzhong: [],
       xuanzhong: [],
       isIndeterminate: true
-    };
+    }
+  },
+  computed: {
+    ...mapGetters(['sidebar', 'avatar'])
   },
   created() {
-    const cityOptions = ["上海", "北京", "广州", "深圳"];
-    this.cities = cityOptions
-    this.weixuanzhong = [...this.cities]
-    this.xuanzhong = this.checkedCities
-    this.bibao()
+    this.TableList()
   },
   methods: {
+    async TableList() {
+      const data = {}
+      const list = await this.request({
+        url: '/RecordingBoard/list',
+        method: 'post',
+        data
+      })
+      const { Alldata, Selection } = list.data
+      const tableData = Alldata
+      this.checkedCities = Selection
+      this.cities = tableData
+      this.weixuanzhong = [...this.cities]
+      this.xuanzhong = this.checkedCities
+      this.bibao()
+      console.log(this.weixuanzhong.length, this.xuanzhong.length)
+      if (this.xuanzhong.length === this.cities.length && this.xuanzhong.length !== 0) {
+        this.checkAll = true
+        this.isIndeterminate = false
+      } else if (this.weixuanzhong.length === 0 && this.xuanzhong.length === 0) {
+        this.checkAll = false
+        this.isIndeterminate = false
+      } else if (this.xuanzhong.length !== this.cities.length && this.xuanzhong.length !== 0) {
+        this.checkAll = false
+        this.isIndeterminate = true
+      } else if (this.weixuanzhong.length !== 0 && this.xuanzhong.length === 0) {
+        this.checkAll = false
+        this.isIndeterminate = false
+      }
+    },
     toggleSideBar() {
-      this.$store.dispatch("app/toggleSideBar")
+      this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch("user/logout")
+      await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
     handleClose(done) {
-      this.$confirm("确认关闭？")
+      this.$confirm('确认关闭？')
         .then(_ => {
           done()
         })
         .catch(_ => {})
     },
+    async Add() {
+      const data = { content: this.input3 }
+      const res = await this.request({
+        url: '/RecordingBoard/Add',
+        method: 'post',
+        data
+      })
+      this.input3 = ''
+      console.log(res)
+      this.TableList()
+      // this.cities.push(this.input3)
+      // this.input3 = ''
+      // this.weixuanzhong = [...this.cities]
+      // if (this.xuanzhong.length !== 0) {
+      //   this.isIndeterminate = true
+      // } else {
+      //   this.checkAll = false
+      // }
+      // this.bibao()
+    },
+    async del(id) {
+      const data = {
+        id: id
+      }
+      const res = await this.request({
+        url: '/RecordingBoard/delete',
+        method: 'post',
+        data
+      })
+      console.log(res)
+      this.TableList()
+      // if (i === -1) {
+      //   this.xuanzhong.splice(index, 1)
+      // } else if (i === 1) {
+      //   this.weixuanzhong.splice(index, 1)
+      // }
+      // const cityOptions = [...this.weixuanzhong, ...this.xuanzhong]
+      // if (this.xuanzhong.length === cityOptions.length && this.xuanzhong.length !== 0 && cityOptions.length !== 0 && this.weixuanzhong.length === 0) {
+      //   this.isIndeterminate = false
+      // } else if (this.xuanzhong.length === 0 && this.weixuanzhong.length === 0) {
+      //   this.checkAll = false
+      // }
+    },
     handleCheckAllChange(val) {
-      const cityOptions = ["上海", "北京", "广州", "深圳"];
-      this.checkedCities = val ? cityOptions : [];
+      const cityOptions = [...this.weixuanzhong, ...this.xuanzhong]
+      this.checkedCities = val ? cityOptions : []
       this.xuanzhong = this.checkedCities
       this.isIndeterminate = false
       this.weixuanzhong = [...this.cities]
-      this.bibao();
-    },
-    handleCheckedCitiesChange(value) {
-      let checkedCount = value.length
-      this.checkAll = checkedCount === this.cities.length;
-      this.isIndeterminate =
-        checkedCount > 0 && checkedCount < this.cities.length;
-      this.xuanzhong = this.checkedCities
-      this.weixuanzhong = [...this.cities]
       this.bibao()
+    },
+    async handleCheckedCitiesChange(value) {
+      const data = { content: value }
+      const res = await this.request({
+        url: '/RecordingBoard/SelectionAdd',
+        method: 'post',
+        data
+      })
+      // this.input3 = ''
+      console.log(res)
+      this.TableList()
+      // console.log(value)
+      // const checkedCount = value.length
+      // this.checkAll = checkedCount === this.cities.length
+      // this.isIndeterminate =
+      //   checkedCount > 0 && checkedCount < this.cities.length
+      // this.xuanzhong = this.checkedCities
+      // this.weixuanzhong = [...this.cities]
+      // this.bibao()
     },
     bibao: (() => {
       return function() {
         for (let index = 0; index < this.weixuanzhong.length; index++) {
           for (let i = 0; i < this.checkedCities.length; i++) {
-            if (this.weixuanzhong[index] === this.checkedCities[i]) {
-              let shuju = this.weixuanzhong.splice(index, 1)
+            if (this.weixuanzhong[index].id === this.checkedCities[i].id) {
+              this.weixuanzhong.splice(index, 1)
               this.bibao()
               return
             }
           }
         }
-      };
+      }
     })()
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
@@ -243,7 +325,7 @@ export default {
   box-sizing: border-box;
   > div {
     width: 100%;
-    height: 30px;
+    min-height: 30px;
     background: #fff;
     border-radius: 10px;
     box-shadow: 0px 0px 5px rgb(223, 223, 223);
@@ -267,6 +349,17 @@ export default {
     }
   }
   /deep/.el-checkbox-group{
+    .el-checkbox__label{
+      display: inline;
+    }
+    .el-checkbox{
+      width: 85%;
+      white-space: normal;
+      word-break: break-all;
+      .el-checkbox__input {
+        vertical-align: top;
+      }
+    }
     .is-checked{
       .el-checkbox__inner{
         background: #9cb9be;
@@ -277,25 +370,45 @@ export default {
         border-color: #81cbd8;
       }
       .el-checkbox__label{
+        width: 85%;
+        word-break: break-all;
+        word-wrap: break-word;
         color:#9cb9be;
-        text-decoration:line-through; 
+        text-decoration:line-through;
       }
       .el-checkbox__label:hover{
         color:#81cbd8;
-        text-decoration:line-through; 
+        text-decoration:line-through;
       }
     }
   }
 }
+@media screen and (max-width: 700px) {
+  /deep/.el-drawer{
+    width: 100vw !important;
+  }
+  /deep/.el-message-box {
+    width: 90vw !important;
+  }
+}
+.transition-box {
+    margin-bottom: 10px;
+    width: 200px;
+    height: 100px;
+    border-radius: 4px;
+    background-color: #409EFF;
+    text-align: center;
+    color: #fff;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    margin-right: 20px;
+  }
+</style>
 
-// /deep/.is-checked{
-//   .el-checkbox__inner{
-//     background: #9cb9be;
-//     border-color: #7ea0a7;
-//   }
-//   .el-checkbox__label{
-//     color:#9cb9be;
-//     text-decoration:line-through; 
-//   }
-// }
+<style>
+@media screen and (max-width: 700px) {
+  .el-message-box {
+    width: 90vw !important;
+  }
+}
 </style>

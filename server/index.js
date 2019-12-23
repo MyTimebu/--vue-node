@@ -60,6 +60,8 @@ app.use(session({
 const router = require('./router.js')
 const websocket = require('./websocket.js')
 const live2dRouter = require('./live2dRouter.js')
+const RecordingBoard = require('./table/RecordingBoard.js')
 app.use(router, websocket.router)
+app.use(RecordingBoard)
 app.use(live2dRouter)
 websocket.wss

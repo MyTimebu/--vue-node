@@ -17,13 +17,12 @@
     <tables />
     <el-row :gutter="20">
       <el-col :span="8">
-        <div class="grid-content bg-purple">
-        </div>
+        <div class="grid-content bg-purple" />
       </el-col>
-      <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
+      <el-col :span="8"><div class="grid-content bg-purple" /></el-col>
+      <el-col :span="8"><div class="grid-content bg-purple" /></el-col>
     </el-row>
-    <EightDiagrams></EightDiagrams>
+    <EightDiagrams />
 
     <!-- <div class="dashboard-text">name: {{ name }}</div> -->
   </div>

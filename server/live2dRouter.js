@@ -28,10 +28,10 @@ router.get('/get', (req, res) => {
         live2dDataName = person.models[shu1 - 1][0]
       }
     }
-
     var live2dData
     fs.readFile('./model/' + live2dDataName + '/index.json', (err, data) => {
       name = './model/' + live2dDataName
+      // console.log(name)
       if (err) {
         return console.error(err)
       }
@@ -63,6 +63,8 @@ router.get('/get', (req, res) => {
               return res.json(status)
             }
           })
+        } else {
+
         }
       } else {
         const status = live2dData
@@ -311,6 +313,38 @@ router.get('/rand_textures', (req, res) => {
         return res.json(status)
       }
     })
+  } else {
+    fs.readFile('./model_list.json', (err, data) => {
+      if (err) {
+        return console.error(err)
+      }
+
+      person = data.toString() // 将二进制的数据转换为字符串
+      person = JSON.parse(person)
+      if (Array.isArray(person.models[id1 - 1])) {
+        const status = { textures: { id: Number(sum(person.models[id1 - 1].length + 1)) }}
+        return res.json(status)
+      } else {
+        fs.readFile(name + '/index.json', (err, data) => {
+          if (err) {
+            return console.error(err)
+          }
+          live2dData = data.toString() // 将二进制的数据转换为字符串
+          live2dData = JSON.parse(live2dData)
+
+          if (Array.isArray(live2dData.textures)) {
+            if (live2dData.textures.length <= 1) {
+              const status = { textures: { id: 1 }}
+              return res.json(status)
+            } else {
+              console.log(live2dData.textures.length)
+              const status = { textures: { id: Number(sum(live2dData.textures.length + 1)) }}
+              return res.json(status)
+            }
+          }
+        })
+      }
+    })
   }
 })
 
@@ -324,6 +358,51 @@ router.get('/switch', (req, res) => {
     status = { model: { id: Number(id) + 1 }}
   }
   res.json(status)
+})
+router.get('/nepnep/general/exp/*.json', (req, res) => {
+  // console.log(req.path)
+  const Path = name.split('neptune_classic')
+  var person
+  console.log(Path)
+  fs.readFile(Path[0] + req.path, (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    person = data.toString() // 将二进制的数据转换为字符串
+    person = JSON.parse(person)
+    const status = person
+    return res.json(status)
+  })
+})
+router.get('/general/pose.json', (req, res) => {
+  // console.log(req.path)
+  const Path = name.split('neptune_classic')
+  var person
+  console.log(Path)
+  fs.readFile(Path[0] + req.path, (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    person = data.toString() // 将二进制的数据转换为字符串
+    person = JSON.parse(person)
+    const status = person
+    return res.json(status)
+  })
+})
+router.get('/nepnep/general/mtn/*.mtn', (req, res) => {
+  // console.log(req.path)
+  const Path = name.split('neptune_classic')
+  var person
+  console.log(Path)
+  fs.readFile(Path[0] + req.path, (err, data) => {
+    if (err) {
+      return console.error(err)
+    }
+    // person = data.toString() // 将二进制的数据转换为字符串
+    // person = JSON.parse(person)
+    // const status = person
+    return res.end(new Buffer(data, 'binary'))
+  })
 })
 // 检测文件是否存在
 function fsExistsSync(path) {

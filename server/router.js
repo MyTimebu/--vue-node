@@ -159,36 +159,6 @@ router.post('/table/Add', (req, res) => {
     res.json(status)
   })
 })
-// 记录板区域RecordingBoard
-router.post('/table/Add', (req, res) => {
-  var alldata = ''
-  req.on('data', function(chunk) {
-    alldata += chunk
-  })
-  var person
-  fs.readFile('./RecordingBoard/RecordingBoard.json', (err, data) => {
-    if (err) {
-      return console.error(err)
-    }
-    alldata = JSON.parse(alldata.toString())
-    person = JSON.parse(data.toString())
-    // 将二进制的数据转换为字符串在专为json数组
-    alldata.id = person.data.length + 1
-    person.data.push(alldata)
-    person.total = person.data.length
-    var str = JSON.stringify(person) // 因为nodejs的写入文件只认识字符串或者二进制数，所以把json对象转换成字符串重新写入json文件中
-    fs.writeFile('./RecordingBoard/RecordingBoard.json', str, function(err) {
-      if (err) {
-        console.error(err)
-      }
-      const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
-      res.json(status)
-      return
-    })
-    const status = { code: 20000, message: '增加成功', data: '' }
-    res.json(status)
-  })
-})
 // 监听 /modifystu
 //  接收edit.html中表单提交的数据，拼接update的SQL语句，再执行，执行成功之后跳转回 /index
 router.post('/modifystu', (req, res) => {
@@ -237,6 +207,35 @@ router.post('/check', (req, res) => {
     }
   })
 })
-
+// 原列表列表数据
+router.get('/table/list', (req, res) => {
+  var items = [{
+    id: '1',
+    title: '11111',
+    status: 'published', // , 'draft', 'deleted'
+    author: 'name1',
+    display_time: '2019-12-17',
+    pageviews: '500'
+  }, {
+    id: '2',
+    title: '22222',
+    status: 'draft', // , '', 'deleted'
+    author: 'name2',
+    display_time: '2019-12-18',
+    pageviews: '600'
+  }, {
+    id: '3',
+    title: '33333',
+    status: 'deleted', // , '', ''
+    author: 'name3',
+    display_time: '2019-12-19',
+    pageviews: '700'
+  }]
+  const status = { code: 20000, message: '增加成功', data: {
+    total: items.length,
+    items: items
+  }}
+  res.json(status)
+})
 // 4. 导出router对象
 module.exports = router

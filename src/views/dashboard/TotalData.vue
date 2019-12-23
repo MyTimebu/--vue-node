@@ -1,10 +1,10 @@
 <template>
   <div class="TotalData">
     <div>
-      <RelationDiagram></RelationDiagram>
+      <RelationDiagram />
     </div>
     <div>
-      <test></test>
+      <test />
     </div>
   </div>
 </template>
@@ -13,7 +13,7 @@
 import RelationDiagram from './echarts/RelationDiagram'
 import test from './echarts/test'
 export default {
-  components:{
+  components: {
     RelationDiagram,
     test
   }
@@ -40,7 +40,7 @@ export default {
     }
   }
 }
-@media screen and (max-width: 900px) { 
+@media screen and (max-width: 900px) {
   .TotalData{
     width: 100%;
     div{
@@ -59,7 +59,7 @@ export default {
     }
   }
 }
-@media screen and (max-width: 500px) { 
+@media screen and (max-width: 600px) {
   .TotalData{
     display: none;
     div{
@@ -78,4 +78,9 @@ export default {
     }
   }
 }
+// @media screen and (max-width: 900px) {
+//   .TotalData{
+//     display: none
+//   }
+// }
 </style>

@@ -4,12 +4,14 @@
       :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))"
       style="width: 100%;border-radius: 10px 10px 0 0"
     >
-      <el-table-column label="ID" prop="id"></el-table-column>
-      <el-table-column label="名字" prop="name"></el-table-column>
-      <el-table-column label="地址" prop="address"></el-table-column>
-      <el-table-column align="right">
+
+      <el-table-column v-if="lie1" label="ID" prop="id" />
+      <el-table-column label="名字" prop="name" />
+      <el-table-column label="地址" prop="address" />
+
+      <el-table-column v-if="lie2" align="right">
         <template slot="header" slot-scope="scope">
-          <el-button type="primary" icon="el-icon-edit" @click="TableAdd" size="medium">添加</el-button>
+          <el-button type="primary" icon="el-icon-edit" size="medium" @click="TableAdd">添加</el-button>
           <!-- <el-input v-model="search" size="mini" placeholder="输入关键字搜索" /> -->
         </template>
         <template slot-scope="scope">
@@ -20,19 +22,20 @@
     </el-table>
     <div class="block">
       <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        :small="fen"
         :current-page.sync="page"
         :page-size="10"
-        layout="prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
+        :layout="layouts"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+      />
     </div>
   </div>
 </template>
 
 <script>
-import { async } from 'q';
+import { async } from 'q'
 export default {
   data() {
     return {
@@ -41,37 +44,54 @@ export default {
       key: 1,
       page: 1,
       total: 0,
-    };
+      lie1: true,
+      lie2: true,
+      fen: false,
+      layouts: 'prev, pager, next, jumper'
+    }
   },
   created() {
     this.TableList()
+    const w = window.innerWidth
+    if (Number(w) < 1000) {
+      this.lie1 = false
+      this.fen = true
+      this.layouts = 'prev, pager, next'
+    }
+    if (Number(w) < 600) {
+      this.lie1 = false
+      this.lie2 = false
+      this.fen = true
+      this.layouts = 'prev, pager, next'
+    }
   },
+  mounted() {},
   methods: {
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      // console.log(`每页 ${val} 条`)
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      // console.log(`当前页: ${val}`)
       this.page = val
       this.TableList()
     },
-    //增
+    // 增
     TableAdd() {
       let name = ''
       let address = ''
-      const h = this.$createElement;
+      const h = this.$createElement
       this.$msgbox({
         title: '更改',
         message: h('div', null, [
           h('span', null, '名字： '),
           h('input', {
             key: this.key++,
-            class:'input_mag',
-            attrs:{ value: name, id:"hinput"},
+            class: 'input_mag',
+            attrs: { value: name, id: 'hinput' },
             on: {
               input: function(event) {
                 name = event.target.value
-              }.bind(this)
+              }
             }
           }),
           h('br'),
@@ -79,12 +99,12 @@ export default {
           h('span', null, '地址： '),
           h('input', {
             key: this.key++,
-            class:'input_mag',
-            attrs: { value: address, id:"hinput2"},
+            class: 'input_mag',
+            attrs: { value: address, id: 'hinput2' },
             on: {
               input: function(event) {
                 address = event.target.value
-              }.bind(this)
+              }
             }
           })
         ]),
@@ -98,8 +118,8 @@ export default {
             done()
           }
         }
-      }).then(async (action) => {
-        let data = {
+      }).then(async(action) => {
+        const data = {
           name,
           address
         }
@@ -121,8 +141,8 @@ export default {
       })
     },
     // 删
-    async handleDelete(index, row) {      
-      let data = {
+    async handleDelete(index, row) {
+      const data = {
         inde: index
       }
       // const del = await this.request({
@@ -138,39 +158,39 @@ export default {
     },
     // 查
     async TableList() {
-      let data = {
-        page:this.page
+      const data = {
+        page: this.page
       }
       const list = await this.request({
         url: '/table/list',
         method: 'post',
         data
       })
-      console.log(list)
-      const { data:tableDatas } = list
+      // console.log(list)
+      const { data: tableDatas } = list
       this.tableData = tableDatas.data
       this.total = tableDatas.total
     },
     // 改
     async TableEdit(index, row) {
-      console.log(index, row)
-      let inde = index
+      // console.log(index, row)
+      const inde = index
       let name = row.name
       let address = row.address
       let key = 1
-      const h = this.$createElement;
+      const h = this.$createElement
       this.$msgbox({
         title: '更改',
         message: h('div', null, [
           h('span', null, '名字： '),
           h('input', {
             key: Number(inde) + key++,
-            class:'input_mag',
-            attrs:{ value: name, id:"hinput"},
+            class: 'input_mag',
+            attrs: { value: name, id: 'hinput' },
             on: {
               input: function(event) {
                 name = event.target.value
-              }.bind(this)
+              }
             }
           }),
           h('br'),
@@ -178,12 +198,12 @@ export default {
           h('span', null, '地址： '),
           h('input', {
             key: Number(inde) + key++,
-            class:'input_mag',
-            attrs: { value: address, id:"hinput2"},
+            class: 'input_mag',
+            attrs: { value: address, id: 'hinput2' },
             on: {
               input: function(event) {
                 address = event.target.value
-              }.bind(this)
+              }
             }
           })
         ]),
@@ -191,16 +211,16 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         beforeClose: (action, instance, done) => {
-          console.log(action, instance, done)
+          // console.log(action, instance, done)
           if (action === 'confirm') {
-            done();
+            done()
           } else {
             done()
           }
         }
-      }).then(async (action) => {
+      }).then(async(action) => {
         // console.log(name,address)
-        let data = {
+        const data = {
           name,
           inde,
           address
@@ -223,10 +243,32 @@ export default {
       })
     }
   }
-};
+}
 </script>
 
 <style lang="scss" scoped>
+
+// @media screen and (max-width: 1000px) {
+//   /deep/{
+//     .el-table_1_column_1{
+//       width: 1px !important;
+//       overflow: hidden;
+//       padding: 0;
+//       box-sizing: border-box;
+//       >.cell{
+//         width: 1px !important;
+//       overflow: hidden;
+//       padding: 0;
+//       box-sizing: border-box;
+//       }
+//     }
+//   }
+// }
+// @media screen and (max-width: 450px) {
+//   /deep/.el-table_1_column_4{
+//     display: none
+//   }
+// }
 .yangshi{
   border-radius: 10px;
   box-shadow:  1px 1px 1px #f4f5f7;
@@ -254,5 +296,10 @@ export default {
   background: #fff;
   border-radius: 0 0 10px 10px;
   text-align: right;
+}
+@media screen and (max-width: 1000px) {
+  .block {
+    text-align: center;
+  }
 }
 </style>

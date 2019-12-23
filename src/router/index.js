@@ -117,6 +117,12 @@ export const constantRoutes = [
   },
 
   {
+    path: '/test',
+    hidden: true,
+    component: () => import('@/views/test/test.vue')
+  },
+
+  {
     path: '/form',
     component: Layout,
     children: [

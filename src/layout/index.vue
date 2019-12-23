@@ -7,7 +7,7 @@
         <navbar />
         <NavigationRecord />
       </div>
-      <app-main />
+      <app-main class="appMainShuju" />
     </div>
   </div>
 </template>
