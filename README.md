@@ -80,9 +80,13 @@ npm run lint -- --fix
 更多信息请参考 [使用文档](https://panjiachen.github.io/vue-element-admin-site/zh/)
 
 ## 当前所引用的插件信息
-canvas合成：vue-canvas-poster(https://github.com/sunnie1992/vue_canvas_poster)
-echart: 官网(https://www.echartsjs.com/zh/index.html)
+
+canvas合成: [vue-canvas-poster](https://github.com/sunnie1992/vue_canvas_poster)
+
+echart: [百度echart官网](https://www.echartsjs.com/zh/index.html)
+
 websocket: ws
+
 ## node
   用的是express
 ## Demo
