@@ -1,8 +1,37 @@
 <template>
-  <div>
-    <vueCanvasPoster :painting="painting " @success="success" />
+  <div class="canvas">
+    <div class="box">
+      <div ondrop="drop(event)" ondragover="allowDrop(event)" class="Up">
+        <img src="../../assets/images/2.jpg" draggable="true" ondragstart="drag(event)" alt="">
+        上
+      </div>
+      <div ondrop="drop(event)" ondragover="allowDrop(event)" class="and">
+        <img src="../../assets/images/3.jpg" draggable="true" ondragstart="drag(event)" alt="">
+        中
+      </div>
+      <div ondrop="drop(event)" ondragover="allowDrop(event)" class="down">
+        <img src="../../assets/images/4.jpg" draggable="true" ondragstart="drag(event)" alt="">
+        下
+      </div>
+      <div ondrop="drop(event)" ondragover="allowDrop(event)" class="alternative1">
+        <img src="../../assets/images/1.jpeg" draggable="true" ondragstart="drag(event)" alt="">
+        备选方案一
+      </div>
+      <div ondrop="drop(event)" ondragover="allowDrop(event)" class="alternative2">
+        <img src="../../assets/images/5.jpg" draggable="true" ondragstart="drag(event)" alt="">
+        备选方案二
+      </div>
+    </div>
+    <div class="canvasBox">
+      <div class="SelectionArea">
+        <div ondrop="drop(event)" ondragover="allowDrop(event)" class="HeadPortrait">
+          <img src="" alt="">
+        </div>
+      </div>
+    </div>
+    <!-- <vueCanvasPoster :painting="painting " @success="success" />
     <img :src="src" alt="">
-    <div>_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-</div>
+    <div>_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-</div> -->
   </div>
 </template>
 
@@ -234,6 +263,17 @@ export default {
     success(src) {
       // 设置img的src
       this.src = src
+    },
+    allowDrop(ev) {
+      ev.preventDefault()
+    },
+    drag(ev) {
+      ev.dataTransfer.setData('Text', ev.target.id)
+    },
+    drop(ev) {
+      ev.preventDefault()
+      var data = ev.dataTransfer.getData('Text')
+      ev.target.appendChild(document.getElementById(data))
     }
   },
   fail(err) {
@@ -242,4 +282,69 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.canvas{
+  width: 100vw;
+  height: calc(100vh - 90px);
+  background:#96AED0;
+  transition: 0.5s;
+  overflow: hidden;
+  position: relative;
+  .box{
+    width: 15%;
+    height: 95%;
+    margin-top: 2%;
+    background:#BEC8D8;
+    overflow: hidden;
+    div{
+      width: 90%;
+      height: 17%;
+      background:#B6C7E0;
+      margin-top: 15%;
+      margin-left : 5%;
+      text-align: center;
+    }
+    div:nth-of-type(1){
+      margin-top: 8%;
+    }
+    .Up,.and,.down,.alternative1,.alternative2{
+      img{
+        width: 100%;
+        height: 100%
+      }
+    }
+  }
+  .canvasBox{
+    width: 75%;
+    height: 75%;
+    margin-top: 2%;
+    background:#1E5DA5;
+    position: absolute;
+    top: 0;
+    left: 20%;
+    .SelectionArea{
+      width: 40%;
+      height: 100%;
+      background:#5F93CC;
+      .HeadPortrait{
+        width: 80%;
+        height: 20%;
+        margin-left: 10%;
+        background: #fff;
+      }
+    }
+  }
+}
+.openSidebar .canvas{
+  width: calc(100vw - 210px);
+  transition: 0.5s;
+}
+.hideSidebar .canvas{
+  width: calc(100vw - 54px);
+  transition: 0.5s;
+}
+.mobile .canvas{
+  width: 100vw;
+  transition: 0.5s;
+}
+</style>

@@ -36,7 +36,7 @@ export default {
       moveEndY = e.changedTouches[0].pageY
       X = moveEndX - startX
       Y = moveEndY - startY
-      if (Math.abs(X) > Math.abs(Y) && X > 100) {
+      if (Math.abs(X) > Math.abs(Y) && X > 160) {
         then.shows = true
         const body = document.querySelector('#app')
         // body.style.height = '100%'
