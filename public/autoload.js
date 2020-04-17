@@ -21,7 +21,7 @@ $.ajax({
 
 //初始化看板娘，会自动加载指定目录下的waifu-tips.json http://192.168.1.121:3000 http://localhost:8282/
 $(window).on('load', function() {
-  initWidget(live2d_path + 'waifu-tips.json', 'http://192.168.0.104:3000')
+  initWidget(live2d_path + 'waifu-tips.json', 'http://192.168.1.113:3000')
 })
 //initWidget第一个参数为waifu-tips.json的路径
 //第二个参数为api地址（无需修改）

@@ -56,6 +56,17 @@ export const constantRoutes = [
   },
 
   {
+    path: '/PathLine',
+    component: Layout,
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/PathLine/index'),
+      meta: { title: '路径线', icon: 'lujing' }
+    }]
+  },
+
+  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',

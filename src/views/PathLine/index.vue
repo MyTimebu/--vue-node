@@ -11,20 +11,26 @@ export default {
   data() {
     return {
       chart: null,
-      data: [],
+      dataList: [
+        [775, 391], [691, 368], [709, 260], [636, 341], [482, 333], [446, 292], [461, 226],
+        [330, 187], [303, 240], [411, 222], [414, 276], [409, 367], [641, 371], [639, 535],
+        [842, 565], [681, 597], [667, 651], [574, 658], [347, 650], [323, 556], [321, 491],
+        [500, 488], [350, 505], [340, 537], [362, 569], [367, 608], [391, 625], [462, 631],
+        [570, 632], [653, 625], [648, 590], [674, 486], [748, 415]
+      ],
       symbolSize: 20,
       zr: ''
     }
   },
   mounted() {
-    // console.log(this.prop);
+    // console.log();
     this.initChart()
-    this.xuanran(this.prop)
+    this.xuanran()
     // this.testClick()
     //  根据窗口大小调整曲线大小
-    // window.onresize = () => {
-    //   this.chart.resize();
-    // };
+    window.onresize = () => {
+      this.chart.resize()
+    }
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -42,16 +48,11 @@ export default {
       this.zr.on('click', (params) => {
         var pointInPixel = [params.offsetX, params.offsetY]
         var pointInGrid = this.chart.convertFromPixel('grid', pointInPixel)
+        console.log(pointInPixel)
 
         if (this.chart.containPixel('grid', pointInPixel)) {
-          this.data.push(pointInGrid)
+          this.dataList.push(pointInGrid)
           this.xuanran()
-          // this.chart.setOption({
-          //     series: [{
-          //         id: 'a',
-          //         data: this.data
-          //     }]
-          // });
         }
       })
 
@@ -59,12 +60,11 @@ export default {
         var pointInPixel = [params.offsetX, params.offsetY]
         this.zr.setCursorStyle(this.chart.containPixel('grid', pointInPixel) ? 'copy' : 'default')
       })
-      console.log(1)
     },
-    xuanran(prop) {
-      console.log(2)
-
-      var points = []
+    xuanran() {
+      console.log(this.dataList)
+      // var points = []
+      const dataList = this.dataList
       this.chart.setOption({
         title: {
           text: ''
@@ -101,7 +101,13 @@ export default {
             type: 'line',
             smooth: true,
             symbolSize: this.symbolSize,
-            data: this.data
+            data: [
+              [775, 391], [691, 368], [709, 260], [636, 341], [482, 333], [446, 292], [461, 226],
+              [330, 187], [303, 240], [411, 222], [414, 276], [409, 367], [641, 371], [639, 535],
+              [842, 565], [681, 597], [667, 651], [574, 658], [347, 650], [323, 556], [321, 491],
+              [500, 488], [350, 505], [340, 537], [362, 569], [367, 608], [391, 625], [462, 631],
+              [570, 632], [653, 625], [648, 590], [674, 486], [748, 415]
+            ]
           }
         ]
       })
@@ -115,15 +121,15 @@ export default {
 
 <style lang="scss" scoped>
 .test{
-  width: 100vw;
-  height: 100vh;
+  // width: 100vw;
+  // height: 100vh;
   position: relative;
   .Img{
     position: absolute;
     top: 0;
     left: 0px;
-    width: 800px;
-    height: 500px;
+    width: 1100px;
+    height: 800px;
     z-index: 1;
   }
 }
@@ -133,8 +139,8 @@ export default {
   }
 }
 .className {
-  width: 800px;
-  height: 500px;
+  width: 1100px;
+  height: 800px;
   z-index: 20;
   position: relative;
 }
