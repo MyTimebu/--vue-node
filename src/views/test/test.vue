@@ -64,7 +64,7 @@ export default {
     xuanran(prop) {
       console.log(2)
 
-      var points = []
+      // var points = []
       this.chart.setOption({
         title: {
           text: ''
