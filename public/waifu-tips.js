@@ -10,13 +10,13 @@ function loadWidget(waifuPath, apiPath) {
 			<div id="waifu-tips"></div>
 			<canvas id="live2d" width="300" height="300"></canvas>
 			<div id="waifu-tool">
-				<span class="fa fa-lg fa-comment"></span>
+				<span class="fa fa-lg fa-comment el-icon-news"></span>
 				<span class="fa fa-lg fa-paper-plane el-icon-coordinate"></span>
 				<span class="fa fa-lg fa-user-circle el-icon-position"></span>
-				<span class="fa fa-lg fa-street-view el-icon-coordinate"></span>
-				<span class="fa fa-lg fa-camera-retro"></span>
-				<span class="fa fa-lg fa-info-circle"></span>
-				<span class="fa fa-lg fa-times"></span>
+				<span class="fa fa-lg fa-street-view el-icon-magic-stick"></span>
+				<span class="fa fa-lg fa-camera-retro el-icon-camera-solid"></span>
+				<span class="fa fa-lg fa-info-circle el-icon-paperclip"></span>
+				<span class="fa fa-lg fa-times el-icon-download"></span>
 			</div>
 		</div>`);
 	$("#waifu").show().animate({}, 3000);
@@ -122,6 +122,15 @@ function loadWidget(waifuPath, apiPath) {
 		if (Math.random() < 0.6 && messageArray.length > 0) showMessage(messageArray[Math.floor(Math.random() * messageArray.length)], 6000, 9);
 		// else $.getJSON("https://v1.hitokoto.cn", function(result) {
 				var text = `唯有永恒，可见真相！`;
+				const TestShuju = Math.ceil(Math.random() * 10)
+				// console.log(TestShuju)
+				if (TestShuju > 8) {
+					text = '呜，(T_T)，大坏蛋,,,,,都这么久了你要对我负责哦！'
+				} else if (TestShuju > 6 && TestShuju < 8) {
+					text = 'bing..........bang。'
+				} else if (TestShuju < 6) {
+					text = '咿呀呀，你都不理人家了！'
+				}
 		// 	showMessage(result.hitokoto, 6000, 9);
 		// 	setTimeout(() => {
 				showMessage(text, 4000, 9);

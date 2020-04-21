@@ -87,14 +87,25 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/Video',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'Video',
+        component: () => import('@/views/video/index'),
+        meta: { title: '视频播放', icon: 'shipin' }
+      }
+    ]
+  },
   {
     path: '/websocket',
     component: Layout,
     children: [
       {
         path: 'index',
-        name: '聊天室',
+        name: 'websocket',
         component: () => import('@/views/websocket/websocket'),
         meta: { title: '聊天室', icon: '讨论区' }
       }
@@ -107,7 +118,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        name: '图片裁切',
+        name: 'canvas',
         component: () => import('@/views/canvas/index'),
         meta: { title: 'canvas合成', icon: 'find' }
       }
@@ -120,7 +131,7 @@ export const constantRoutes = [
     children: [
       {
         path: 'index',
-        name: '命运转盘',
+        name: 'luck',
         component: () => import('@/views/luck/index'),
         meta: { title: '命运转盘', icon: 'luck' }
       }

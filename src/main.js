@@ -5,7 +5,9 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 // import locale from 'element-ui/lib/locale/lang/en' // lang i18n
-
+import video from 'video.js'
+import 'video.js/dist/video-js.css'
+import 'videojs-contrib-hls'
 import '@/styles/index.scss' // global css
 
 import App from './App'
@@ -17,7 +19,7 @@ import '@/permission' // permission control
 // 请求接口方法公共，注：因是个人所以目前不存在复杂页面的调用实行本页面掉接口
 import request from '@/utils/request'
 Vue.prototype.request = request
-
+Vue.prototype.$video = video
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
