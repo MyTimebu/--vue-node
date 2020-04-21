@@ -64,7 +64,7 @@ router.get('/get', (req, res) => {
             }
           })
         } else {
-
+          console.log()
         }
       } else {
         const status = live2dData
@@ -79,17 +79,18 @@ router.get('/get/model.moc', (req, res) => {
   const shuju = req.path.split('/')
   const shu1 = shuju[2]
   // const shu2 = shuju[1] ? shuju[1] : 0
-  var person
+  // var person
   fs.readFile(name + '/' + shu1, (err, data) => {
     if (err) {
       return console.error(err)
     }
     // console.log(iconv.decode(data, 'UCS-2BE'))
-    person = data.toString() // 将二进制的数据转换为字符串
+    // person = data.toString() // 将二进制的数据转换为字符串
     // person = JSON.parse(person)
-    const status = person
+    // const status = person
+    // console.log(status)
     // res.json(status)
-    return res.end(new Buffer(data, 'UCS-2BE'))
+    return res.end(Buffer.from(data, 'UCS-2BE'))
   })
 })
 
@@ -134,20 +135,21 @@ router.get('/get/textures/*', (req, res) => {
   // console.log(req.query)
   const shuju = req.path.split('get')
   const shu1 = shuju[1]
-  const shu2 = shuju[1] ? shuju[1] : 0
-  var person
+  // const shu2 = shuju[1] ? shuju[1] : 0
+  // var person
   // console.log(shu1)
   fs.readFile(name + shu1, (err, data) => {
     if (err) {
       return console.error(err)
     }
 
-    person = data.toString() // 将二进制的数据转换为字符串
+    // person = data.toString() // 将二进制的数据转换为字符串
+    // console.log(person)
     // person = JSON.parse(person)
     // console.log(person)
     // const status = person
-    // res.json(status)
-    return res.end(new Buffer(data, 'binary'))
+    // res.json(status)Buffer.from
+    return res.end(Buffer.from(data, 'binary'))
   })
 })
 
@@ -164,31 +166,32 @@ router.get('/get/textures.:id/*', (req, res) => {
           return console.error(err)
         }
 
-        person = data.toString() // 将二进制的数据转换为字符串
+        // person = data.toString() // 将二进制的数据转换为字符串
         // person = JSON.parse(person)
         // console.log(person)
         // const status = person
         // res.json(status)
-        return res.end(new Buffer(data, 'binary'))
+        return res.end(Buffer.from(data, 'binary'))
       })
     })
   } else {
     shu1 = shuju[1]
   }
-  const shu2 = shuju[1] ? shuju[1] : 0
-  var person
+  // const shu2 = shuju[1] ? shuju[1] : 0
+  // var person
   // console.log(shu1)
   fs.readFile(name + shu1, (err, data) => {
     if (err) {
       return console.error(err)
     }
 
-    person = data.toString() // 将二进制的数据转换为字符串
+    // person = data.toString() // 将二进制的数据转换为字符串
+    // console.log(person)
     // person = JSON.parse(person)
     // console.log(person)
     // const status = person
     // res.json(status)
-    return res.end(new Buffer(data, 'binary'))
+    return res.end(Buffer.from(data, 'binary'))
   })
 })
 
@@ -204,31 +207,31 @@ router.get('/get/texture_:id/*', (req, res) => {
           return console.error(err)
         }
 
-        person = data.toString() // 将二进制的数据转换为字符串
+        // person = data.toString() // 将二进制的数据转换为字符串
         // person = JSON.parse(person)
         // console.log(person)
         // const status = person
         // res.json(status)
-        return res.end(new Buffer(data, 'binary'))
+        return res.end(Buffer.from(data, 'binary'))
       })
     })
   } else {
     shu1 = shuju[1]
   }
-  const shu2 = shuju[1] ? shuju[1] : 0
-  var person
+  // const shu2 = shuju[1] ? shuju[1] : 0
+  // var person
   // console.log(shu1)
   fs.readFile(name + shu1, (err, data) => {
     if (err) {
       return console.error(err)
     }
 
-    person = data.toString() // 将二进制的数据转换为字符串
+    // person = data.toString() // 将二进制的数据转换为字符串
     // person = JSON.parse(person)
     // console.log(person)
     // const status = person
     // res.json(status)
-    return res.end(new Buffer(data, 'binary'))
+    return res.end(Buffer.from(data, 'binary'))
   })
 })
 
@@ -236,20 +239,20 @@ router.get('/get/motions/*', (req, res) => {
   // console.log(req.query)
   const shuju = req.path.split('get')
   const shu1 = shuju[1]
-  const shu2 = shuju[1] ? shuju[1] : 0
-  var person
+  // const shu2 = shuju[1] ? shuju[1] : 0
+  // var person
   fs.readFile(name + decodeURIComponent(shu1), (err, data) => {
     if (err) {
       return console.error(err)
     }
 
-    person = data // 将二进制的数据转换为字符串
+    // person = data // 将二进制的数据转换为字符串
     // person = JSON.parse(person)
     // console.log(person)
-    const status = person
+    // const status = person
     // res.json(status)
-    return res.end(new Buffer(data, 'UCS-2BE'))
-    // res.end(new Buffer(data, 'binary'))
+    return res.end(Buffer.from(data, 'UCS-2BE'))
+    // res.end(new Buffer.from(data, 'binary'))
   })
 })
 
@@ -392,7 +395,7 @@ router.get('/general/pose.json', (req, res) => {
 router.get('/nepnep/general/mtn/*.mtn', (req, res) => {
   // console.log(req.path)
   const Path = name.split('neptune_classic')
-  var person
+  // var person
   console.log(Path)
   fs.readFile(Path[0] + req.path, (err, data) => {
     if (err) {
@@ -401,7 +404,7 @@ router.get('/nepnep/general/mtn/*.mtn', (req, res) => {
     // person = data.toString() // 将二进制的数据转换为字符串
     // person = JSON.parse(person)
     // const status = person
-    return res.end(new Buffer(data, 'binary'))
+    return res.end(Buffer.from(data, 'binary'))
   })
 })
 // 检测文件是否存在

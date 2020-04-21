@@ -34,24 +34,25 @@ router.post('/user/login', (req, res) => {
     // // 输出数据
     // console.log(dataObj)
     const status = { code: 20000, message: '一切正常', data: { 'token': data.username + '-token' }}
-    res.json(status)
+    return res.json(status)
   })
 })
 router.get('/user/info', (req, res) => {
   console.log(req.query)
   const status = { code: 20000, message: '一切正常', data: { name: req.query.token, avatar: 'https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif' }}
-  res.json(status)
+  return res.json(status)
 })
 router.post('/user/logout', (req, res) => {
   // console.log(req.query)
   const status = { code: 20000, message: '一切正常', data: '' }
-  res.json(status)
+  return res.json(status)
 })
 router.post('/list', (req, res) => {
   // console.log(clients)
   const status = { code: 20000, message: '一切正常', data: '' }
-  res.json(status)
+  return res.json(status)
 })
+// 查
 router.post('/table/list', (req, res) => {
   var alldata = ''
   req.on('data', function(chunk) {
@@ -67,7 +68,7 @@ router.post('/table/list', (req, res) => {
     person = JSON.parse(person)
     person.data = person.data.slice(Number(alldata.page) === 1 ? 0 : (Number(alldata.page) - 1) * 10, Number(alldata.page) * 10)
     const status = { code: 20000, message: '一切正常', data: person }
-    res.json(status)
+    return res.json(status)
   })
 })
 // 改
@@ -91,13 +92,12 @@ router.post('/table/edit', (req, res) => {
     fs.writeFile('./TableData.json', str, function(err) {
       if (err) {
         console.error(err)
+        const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+        return res.json(status)
       }
-      const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
-      res.json(status)
-      return
     })
     const status = { code: 20000, message: '更改成功', data: '' }
-    res.json(status)
+    return res.json(status)
   })
 })
 // 删
@@ -122,11 +122,11 @@ router.post('/table/delete', (req, res) => {
         console.error(err)
       }
       const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
-      res.json(status)
-      return
+      return res.json(status)
+      // return
     })
     const status = { code: 20000, message: '删除成功', data: '' }
-    res.json(status)
+    return res.json(status)
   })
 })
 // 增
@@ -152,11 +152,11 @@ router.post('/table/Add', (req, res) => {
         console.error(err)
       }
       const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
-      res.json(status)
-      return
+      return res.json(status)
+      // return
     })
     const status = { code: 20000, message: '增加成功', data: '' }
-    res.json(status)
+    return res.json(status)
   })
 })
 // 监听 /modifystu
@@ -235,7 +235,7 @@ router.get('/table/list', (req, res) => {
     total: items.length,
     items: items
   }}
-  res.json(status)
+  return res.json(status)
 })
 // 4. 导出router对象
 module.exports = router
