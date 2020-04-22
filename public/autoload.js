@@ -27,7 +27,7 @@ $(window).on('load', function() {
 //第二个参数为api地址（无需修改）
 //api后端可自行搭建，参考https://github.com/fghrsh/live2d_api
 
-console.log(`
+console.log(`%c
   く__,.ヘヽ.        /  ,ー､ 〉
            ＼ ', !-─‐-i  /  /´
            ／｀ｰ'       L/／｀ヽ､
@@ -45,4 +45,4 @@ console.log(`
               ﾚ'ヽL__|___i,___,ンﾚ|ノ
                   ﾄ-,/  |___./
                   'ｰ'    !_,.:
-`)
+`,"color:#ea66a6")
