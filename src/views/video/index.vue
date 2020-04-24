@@ -1,7 +1,7 @@
 <template>
   <div class="app-container" style="padding-bottom:0">
     <el-row :gutter="20">
-      <el-col :span="18">
+      <el-col id="VideoBOX" :span="18">
         <div class="grid-content bg-purple">
           <video
             id="my-video"
@@ -26,7 +26,7 @@
           </video>
         </div>
       </el-col>
-      <el-col :span="6"><div class="grid-content bg-purple" /></el-col>
+      <el-col id="leftVideoList" :span="6"><div class="grid-content bg-purple" /></el-col>
     </el-row>
     <footer>
       <div @click="switchs(1)">
@@ -93,15 +93,16 @@ export default {
       if (i === 5) {
         SRCURL = 'http://ivi.bupt.edu.cn/hls/cctv6hd.m3u8'
       }
-      this.footerVideo = SRCURL
-      this.footerVideoID = i
-      this.switchsFooterVideo.src(SRCURL)
-      this.switchsFooterVideo.ready(function() {
-        this.switchsFooterVideo.play()
-      })
-      // this.switchsFooterVideo.play()
-      // this.switchsFooterVideo.load()
+      // this.switchsFooterVideo.paus()
       // this.switchsFooterVideo.dispose()
+      // this.footerVideo.src = SRCURL
+      this.footerVideoID = i
+      this.switchsFooterVideo.src({ type: 'application/x-mpegURL', src: SRCURL })
+      // this.switchsFooterVideo.ready(function() {
+      //   this.switchsFooterVideo.play()
+      // })
+      this.switchsFooterVideo.play()
+      // this.switchsFooterVideo.load()
     }
   }
 }
@@ -115,10 +116,19 @@ export default {
   flex-direction: column;
   justify-content: space-between;
 }
+@media screen and (max-width: 600px) {
+  #VideoBOX{
+    width: 100%;
+  }
+  #leftVideoList{
+    display: none;
+  }
+}
 footer{
   display: flex;
   align-items: center;
   height: 170px;
+
   background: #99a9bf;
   overflow-x: auto;
   >div{
@@ -131,6 +141,8 @@ footer{
     color: #f9fafc;
     font-weight: 800;
     border-radius: 10px;
+    padding: 5px;
+    box-sizing: border-box;
     text-shadow: 0px 1px 20px #fff;
     cursor: pointer;
     position: relative;
@@ -144,7 +156,6 @@ footer{
       font-weight: 0;
       text-shadow: 0px 0px 0px #fff;
       position: absolute;
-      left: 5px;
       top: 8px;
       font-size: 10px;
     }
@@ -158,7 +169,6 @@ footer{
       font-weight: 0;
       text-shadow: 0px 0px 0px #fff;
       position: absolute;
-      left: 5px;
       top: 8px;
       font-size: 10px;
     }
