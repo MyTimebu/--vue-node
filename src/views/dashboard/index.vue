@@ -33,7 +33,7 @@
 import { mapGetters } from 'vuex'
 import lable from './lable'
 import TotalData from './TotalData'
-import backgrounds from './background'
+// import backgrounds from './background'
 import tables from './table/table'
 import EightDiagrams from './EightDiagrams/EightDiagrams'
 export default {
@@ -41,7 +41,6 @@ export default {
   components: {
     lable,
     TotalData,
-    backgrounds,
     tables,
     EightDiagrams
   },
