@@ -6,9 +6,13 @@
     >
 
       <el-table-column v-if="lie1" label="ID" prop="id" />
-      <el-table-column label="名字" prop="name" />
-      <el-table-column label="地址" prop="address" />
-
+      <el-table-column label="前一句" prop="name" />
+      <el-table-column label="后一句" prop="address" />
+      <el-table-column label="朗读当前">
+        <template slot-scope="{row}">
+          <i class="el-icon-mic" @click="PlayCurrent(row)" />
+        </template>
+      </el-table-column>
       <el-table-column v-if="lie2" align="right">
         <template slot="header" slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" size="medium" @click="TableAdd">添加</el-button>
@@ -21,6 +25,7 @@
       </el-table-column>
     </el-table>
     <div class="block">
+      <div id="AudioText" />
       <el-pagination
         :small="fen"
         :current-page.sync="page"
@@ -42,6 +47,7 @@ export default {
       tableData: [],
       search: '',
       key: 1,
+      key2: 1,
       page: 1,
       total: 0,
       lie1: true,
@@ -80,12 +86,15 @@ export default {
       let name = ''
       let address = ''
       const h = this.$createElement
+      this.key = this.key + this.key2
+      this.key2 = this.key + this.key2
+      // console.log(this.key, this.key2)
       this.$msgbox({
         title: '更改',
         message: h('div', null, [
           h('span', null, '名字： '),
           h('input', {
-            key: this.key++,
+            key: this.key,
             class: 'input_mag',
             attrs: { value: name, id: 'hinput' },
             on: {
@@ -98,7 +107,7 @@ export default {
           h('br'),
           h('span', null, '地址： '),
           h('input', {
-            key: this.key++,
+            key: this.key2,
             class: 'input_mag',
             attrs: { value: address, id: 'hinput2' },
             on: {
@@ -140,6 +149,21 @@ export default {
         })
       })
     },
+    // 语音播放
+    async PlayCurrent(row) {
+      const qian = row.name.match(/\((.+?)\)/g)
+      const hou = row.address.match(/\((.+?)\)/g)
+      const TextCont = qian + ' ' + hou
+      // console.log(TextCont, qian, hou)
+      await this.request({
+        url: '/audio/text',
+        method: 'post',
+        data: { Text: TextCont }
+      }).then((res) => {
+        document.getElementById('AudioText').innerHTML = `<audio controls="controls" controlsList="nodownload" autoplay style='display:none'><source src="${res}" type="audio/mp3"></audio>`
+        console.log(res)
+      })
+    },
     // 删
     async handleDelete(index, row) {
       const data = {
@@ -173,18 +197,20 @@ export default {
     },
     // 改
     async TableEdit(index, row) {
-      // console.log(index, row)
+      console.log(index, row)
       const inde = index
       let name = row.name
       let address = row.address
-      let key = 1
+      this.key = this.key + this.key2
+      this.key2 = this.key + this.key2
+      console.log(this.key, this.key2)
       const h = this.$createElement
       this.$msgbox({
         title: '更改',
         message: h('div', null, [
           h('span', null, '名字： '),
           h('input', {
-            key: Number(inde) + key++,
+            key: this.key,
             class: 'input_mag',
             attrs: { value: name, id: 'hinput' },
             on: {
@@ -197,7 +223,7 @@ export default {
           h('br'),
           h('span', null, '地址： '),
           h('input', {
-            key: Number(inde) + key++,
+            key: this.key2,
             class: 'input_mag',
             attrs: { value: address, id: 'hinput2' },
             on: {

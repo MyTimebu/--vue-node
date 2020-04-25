@@ -10,7 +10,6 @@
             preload="auto"
             muted
             poster="https://vjs.zencdn.net/v/oceans.png"
-            data-setup="{}"
           >
             <!-- <source src="https://vjs.zencdn.net/v/oceans.mp4" type="video/mp4"> -->
             <source :src="footerVideo.src" type="application/x-mpegURL">

@@ -10,13 +10,15 @@ const service = axios.create({
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
-
+let audioText = true
 // request interceptor
 service.interceptors.request.use(
   config => {
     // console.log(config)
     // do something before request is sent 在发出请求前做点什么
-
+    if (config.url.includes('audio')) {
+      audioText = false
+    }
     // if (store.getters.token) {
     //   // let each request carry token
     //   // ['X-Token'] is a custom headers key
@@ -46,30 +48,34 @@ service.interceptors.response.use(
    */
   response => {
     const res = response.data
-
-    // if the custom code is not 20000, it is judged as an error.错误统一为负数其余不变
-    if (res.code !== 20000) {
-      Message({
-        message: res.message || '接口报错',
-        type: 'error',
-        duration: 5 * 1000
-      })
-      // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;50008:非法令牌；50012:其他客户端登录；50014:令牌过期；
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
-        // to re-login
-        MessageBox.confirm('您的账户已过期，或已经在其他地点登录，请重新登录或更改密码！', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
-        })
-      }
-      return Promise.reject(new Error(res.message || '接口报错'))
+    if (!audioText) {
+      audioText = true
+      return response.data
     } else {
-      return res
+    // if the custom code is not 20000, it is judged as an error.错误统一为负数其余不变
+      if (res.code !== 20000) {
+        Message({
+          message: res.message || '接口报错',
+          type: 'error',
+          duration: 5 * 1000
+        })
+        // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;50008:非法令牌；50012:其他客户端登录；50014:令牌过期；
+        if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+        // to re-login
+          MessageBox.confirm('您的账户已过期，或已经在其他地点登录，请重新登录或更改密码！', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            store.dispatch('user/resetToken').then(() => {
+              location.reload()
+            })
+          })
+        }
+        return Promise.reject(new Error(res.message || '接口报错'))
+      } else {
+        return res
+      }
     }
   },
   error => {

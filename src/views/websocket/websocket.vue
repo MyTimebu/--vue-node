@@ -75,7 +75,7 @@ export default {
         method: 'post',
         data
       }).then(response => {
-        this.ws = new WebSocket('ws://192.168.1.121:8090')
+        this.ws = new WebSocket('ws://192.168.1.113:8090')
         this.init()
       }).catch(error => {
         this.$message.error(error)

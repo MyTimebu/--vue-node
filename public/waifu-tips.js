@@ -6,7 +6,8 @@
 function loadWidget(waifuPath, apiPath) {
 	localStorage.removeItem("waifu-display");
 	sessionStorage.removeItem("waifu-text");
-	document.body.insertAdjacentHTML('beforeend', `<div id="waifu">
+	document.body.insertAdjacentHTML('beforeend', `
+		<div id="waifu">
 			<div id="waifu-tips"></div>
 			<canvas id="live2d" width="300" height="300"></canvas>
 			<div id="waifu-tool">
@@ -20,6 +21,60 @@ function loadWidget(waifuPath, apiPath) {
 			</div>
 		</div>`);
 	$("#waifu").show().animate({}, 3000);
+
+	class Drag {
+		//构造函数
+		constructor(el) {
+				this.el = el;
+				//鼠标摁下时的元素位置
+				this.startOffset = {};
+				//鼠标摁下时的鼠标位置
+				this.startPoint = {};
+				let move = (e) => {
+						this.move(e);
+				};
+				let end = (e) => {
+						document.removeEventListener("mousemove", move);
+						document.removeEventListener("mouseup", end);
+				};
+				el.addEventListener("mousedown", (e) => {
+						this.start(e);
+						document.addEventListener("mousemove", move);
+						document.addEventListener("mouseup", end);
+				})
+		}
+		//摁下时的处理函数
+		start(e) {
+				let { el } = this;
+				this.startOffset = {
+						x: el.offsetLeft,
+						y: el.offsetTop
+				}
+				this.startPoint = {
+						x: e.clientX,
+						y: e.clientY
+				}
+		}
+		//鼠标移动时的处理函数
+		move(e) {
+				let { el, startOffset, startPoint } = this;
+				let newPoint = {
+						x: e.clientX,
+						y: e.clientY
+				}
+				let dis = {
+						x: newPoint.x - startPoint.x,
+						y: newPoint.y - startPoint.y,
+				}
+				el.style.left = dis.x + startOffset.x + "px";
+				el.style.top = dis.y + startOffset.y + "px";
+		}
+}
+
+(function () {
+		let box = document.querySelector("#waifu");
+		let dragbox = new Drag(box);
+})()
 
 	function registerEventListener() {
 		document.querySelector("#waifu-tool .fa-comment").addEventListener("click", showHitokoto);
