@@ -8,6 +8,9 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
+      <template>
+        <audio controls="controls" controlsList="nodownload" autoplay><source :src="MusicData" type="audio/flac"></audio>
+      </template>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -103,6 +106,7 @@ export default {
       cities: [],
       weixuanzhong: [],
       xuanzhong: [],
+      MusicData: '',
       isIndeterminate: true
     }
   },
@@ -111,6 +115,9 @@ export default {
   },
   created() {
     this.TableList()
+    setTimeout(() => {
+      this.NavMusic()
+    }, 5000)
   },
   methods: {
     async TableList() {
@@ -224,6 +231,27 @@ export default {
       //   checkedCount > 0 && checkedCount < this.cities.length
       // this.xuanzhong = this.checkedCities
       // this.weixuanzhong = [...this.cities]
+      // this.bibao()
+    },
+    async NavMusic() {
+      const data = {}
+      const res = await this.request({
+        url: '/flac/audio/play',
+        method: 'post',
+        data
+      })
+      // this.input3 = ''
+      console.log(res)
+      this.MusicData = res
+      // this.TableList()
+      // this.cities.push(this.input3)
+      // this.input3 = ''
+      // this.weixuanzhong = [...this.cities]
+      // if (this.xuanzhong.length !== 0) {
+      //   this.isIndeterminate = true
+      // } else {
+      //   this.checkAll = false
+      // }
       // this.bibao()
     },
     bibao: (() => {

@@ -39,6 +39,9 @@ router.post('/RecordingBoard/edit', (req, res) => {
     fs.writeFile('../json/RecordingBoard.json', str, function(err) {
       if (err) {
         console.error(err)
+        const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+        res.json(status)
+        return
       }
       const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
       res.json(status)
@@ -73,6 +76,9 @@ router.post('/RecordingBoard/delete', (req, res) => {
     fs.writeFile('./json/RecordingBoard.json', str, function(err) {
       if (err) {
         console.error(err)
+        const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+        res.json(status)
+        return
       }
       const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
       res.json(status)
@@ -102,6 +108,9 @@ router.post('/RecordingBoard/Add', (req, res) => {
     fs.writeFile('./json/RecordingBoard.json', str, function(err) {
       if (err) {
         console.error(err)
+        const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+        res.json(status)
+        return
       }
       const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
       res.json(status)
@@ -131,6 +140,9 @@ router.post('/RecordingBoard/SelectionAdd', (req, res) => {
     fs.writeFile('./json/RecordingBoard.json', str, function(err) {
       if (err) {
         console.error(err)
+        const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
+        res.json(status)
+        return
       }
       const status = { code: -10000, message: '更改失败，原因' + err, data: '' }
       res.json(status)
